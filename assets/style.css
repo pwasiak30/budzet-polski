@@ -1,0 +1,976 @@
+/* ============================================================
+   BUDŻET POLSKI — ARKUSZ STYLÓW
+   Bazuje na szablonie Forge UI („Fedora Project × Zorin OS”):
+   glassmorphism, gradient niebiesko-cyjanowo-fioletowy,
+   zaokrąglenia 16px, bento-grid, pełny dark/light mode.
+   Sekcje 1–9 = szablon bazowy (bez zmian filozofii),
+   sekcje 10+ = komponenty specyficzne dla projektu
+   (liczby ze źródłami, kafelki KPI, wykresy, tabele).
+   ============================================================= */
+
+/* ------------------------------------------------------------
+   1. ZMIENNE CSS (CUSTOM PROPERTIES)
+   Kolory serii wykresów (--series-*) pochodzą z palety
+   zweryfikowanej narzędziem daltonistycznym (CVD) dla tła
+   jasnego i ciemnego — nie zmieniaj ich „na oko”.
+------------------------------------------------------------- */
+:root {
+  /* Typografia */
+  --font-display: 'Red Hat Display', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Geometria */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  --container-max: 1120px;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+
+  /* Gradient akcentujący: niebieski → cyjan → fiolet */
+  --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #22d3ee 50%, #a855f7 100%);
+  --color-accent-blue: #3b82f6;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-purple: #a855f7;
+
+  /* Motyw JASNY (wartości domyślne) */
+  --color-bg: #f4f6fb;
+  --color-bg-secondary: #eaeef7;
+  --color-surface: rgba(255, 255, 255, 0.66);
+  --color-surface-solid: #ffffff;
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-text: #10131a;
+  --color-text-muted: #565f72;
+  --shadow-glass: 0 8px 32px rgba(15, 23, 42, 0.08);
+  --shadow-glass-hover: 0 12px 40px rgba(15, 23, 42, 0.12);
+  --blur-glass: blur(16px);
+
+  /* Wykresy — serie (lata) i elementy pomocnicze, motyw jasny */
+  --series-1: #2a78d6;   /* 2025 wykonanie / seria 1 */
+  --series-2: #eb6834;   /* 2026 ustawa / seria 2 */
+  --series-3: #1baf7a;   /* 2027 projekt / seria 3 */
+  --chart-track: #e6eaf2;       /* tło paska (tor) */
+  --chart-grid: #dfe3ec;        /* linie pomocnicze */
+  --chart-ref: #b4232f;         /* linie progów (np. 55% / 60% PKB) */
+  --color-good: #0b6b1f;        /* zmiana korzystna (tekst) */
+  --color-bad: #b4232f;         /* zmiana niekorzystna (tekst) */
+  --color-warn-bg: rgba(250, 178, 25, 0.16);
+  --color-warn-border: rgba(180, 120, 0, 0.45);
+
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+/* Motyw CIEMNY — aktywowany automatycznie (prefers-color-scheme)
+   lub ręcznie przez [data-theme="dark"] ustawiane w app.js. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0f1420;
+    --color-bg-secondary: #151b2b;
+    --color-surface: rgba(23, 29, 45, 0.55);
+    --color-surface-solid: #171d2d;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-text: #e7ebf3;
+    --color-text-muted: #9aa3b8;
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.45);
+    --shadow-glass-hover: 0 12px 40px rgba(0, 0, 0, 0.55);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --chart-track: #222a3d;
+    --chart-grid: #2a3247;
+    --chart-ref: #ff7b7b;
+    --color-good: #4ade80;
+    --color-bad: #ff8a8a;
+    --color-warn-bg: rgba(250, 178, 25, 0.12);
+    --color-warn-border: rgba(250, 178, 25, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #0f1420;
+  --color-bg-secondary: #151b2b;
+  --color-surface: rgba(23, 29, 45, 0.55);
+  --color-surface-solid: #171d2d;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-text: #e7ebf3;
+  --color-text-muted: #9aa3b8;
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-glass-hover: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --chart-track: #222a3d;
+  --chart-grid: #2a3247;
+  --chart-ref: #ff7b7b;
+  --color-good: #4ade80;
+  --color-bad: #ff8a8a;
+  --color-warn-bg: rgba(250, 178, 25, 0.12);
+  --color-warn-border: rgba(250, 178, 25, 0.45);
+}
+
+/* ------------------------------------------------------------
+   2. RESET / BAZA
+------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  margin: 0 0 var(--space-2);
+}
+
+p { margin: 0 0 var(--space-2); }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Widoczny focus dla nawigacji klawiaturą (WCAG AA) */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+/* Ikony SVG — dziedziczą kolor, rozmiar kontrolowany przez width/height
+   na elemencie <svg> (patrz HTML), tu tylko display i overflow. */
+.icon {
+  display: block;
+  overflow: visible;
+}
+
+/* Tekst tylko dla czytników ekranu */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* Link „przejdź do treści” — widoczny dopiero po fokusie */
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-solid);
+  border: 1px solid var(--color-border);
+}
+.skip-link:focus { top: var(--space-1); }
+
+/* ------------------------------------------------------------
+   3. NAGŁÓWEK / NAWIGACJA
+   Na mobile nawigacja przechodzi do drugiego wiersza i przewija
+   się poziomo (bez JS i bez „hamburgera”).
+------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--color-surface);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.logo__accent {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.main-nav {
+  display: flex;
+  gap: var(--space-3);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.main-nav a {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+
+.main-nav a:hover { color: var(--color-text); }
+
+/* Aktywna podstrona */
+.main-nav a[aria-current="page"] {
+  color: var(--color-text);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--color-accent-blue);
+}
+
+@media (max-width: 900px) {
+  .main-nav {
+    order: 3;
+    width: 100%;
+    gap: var(--space-2);
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+}
+
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-solid);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.theme-toggle:hover { transform: translateY(-1px); border-color: var(--color-accent-blue); }
+
+/* Pokazujemy ikonę słońca w motywie ciemnym (kliknięcie -> jasny)
+   i ikonę księżyca w motywie jasnym (kliknięcie -> ciemny). */
+.theme-toggle .icon--moon { display: block; }
+.theme-toggle .icon--sun { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon--moon { display: none; }
+  :root:not([data-theme="light"]) .theme-toggle .icon--sun { display: block; }
+}
+:root[data-theme="dark"] .theme-toggle .icon--moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon--sun { display: block; }
+
+/* ------------------------------------------------------------
+   4. HERO
+------------------------------------------------------------- */
+.hero {
+  padding: var(--space-5) var(--space-3) var(--space-3);
+}
+
+/* Hero wyrównany do lewej krawędzi kart, ale z ograniczoną szerokością tekstu */
+.hero > * { max-width: 820px; }
+
+.hero--page { padding-top: var(--space-4); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.hero__title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.hero__lead {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  max-width: 62ch;
+}
+
+.hero__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn:hover { transform: translateY(-1px); }
+
+.btn--primary {
+  background: var(--gradient-accent);
+  color: #ffffff;
+  box-shadow: var(--shadow-glass);
+}
+
+.btn--ghost {
+  background: var(--color-surface-solid);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* ------------------------------------------------------------
+   5. GLASS CARD — bazowa powierzchnia glassmorphism
+------------------------------------------------------------- */
+.glass-card {
+  background: var(--color-surface);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-glass);
+  padding: var(--space-3);
+  min-width: 0;   /* pozwala zawartości (tabele, wykresy) kurczyć się w siatce */
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-glass-hover);
+}
+
+.glass-card h2 { font-size: 1.3rem; }
+.glass-card h3 { font-size: 1.05rem; margin-top: var(--space-3); }
+
+/* ------------------------------------------------------------
+   6. BENTO GRID
+   Układ nierównych kart. Modyfikatory --wide / --tall / --full
+   zmieniają rozpiętość. Na mobile wszystko wraca do 1 kolumny.
+------------------------------------------------------------- */
+.bento {
+  padding: var(--space-3) var(--space-3) var(--space-4);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(160px, auto);
+  gap: var(--space-3);
+}
+
+.bento-item--wide {
+  grid-column: span 2;
+}
+
+.bento-item--full {
+  grid-column: 1 / -1;
+}
+
+.bento-item--tall {
+  grid-row: span 2;
+}
+
+@media (max-width: 900px) {
+  .bento-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bento-item--wide,
+  .bento-item--full,
+  .bento-item--tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+/* ------------------------------------------------------------
+   7. SEKCJA TEKSTOWA (odpowiednik „O projekcie” z szablonu)
+------------------------------------------------------------- */
+.about {
+  padding: 0 var(--space-3) var(--space-5);
+}
+
+.about__card {
+  max-width: 820px;
+}
+
+/* ------------------------------------------------------------
+   8. SOCIAL FAB
+   Desktop (≥768px): pionowa kolumna, fixed, lewy dolny róg.
+   Mobile (<768px): pozioma pigułka, fixed, dół ekranu, wyśrodkowana.
+   Statyczny — bez JS do rozwijania/zwijania.
+   Prawy dolny róg pozostaje wolny dla CTA specyficznych dla projektu.
+------------------------------------------------------------- */
+.social-fab {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  background: var(--color-surface);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Desktop: kolumna po lewej, dolny róg */
+@media (min-width: 768px) {
+  .social-fab {
+    left: var(--space-3);
+    bottom: var(--space-3);
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-radius: var(--radius-pill);
+  }
+}
+
+/* Mobile: pigułka na dole, wyśrodkowana */
+@media (max-width: 767px) {
+  .social-fab {
+    left: 50%;
+    bottom: var(--space-2);
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: var(--space-1);
+    padding: var(--space-1);
+    border-radius: var(--radius-pill);
+    max-width: calc(100% - var(--space-3) * 2);
+    overflow-x: auto;
+  }
+}
+
+.social-fab__link {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.social-fab__link:hover {
+  color: var(--color-text);
+  background: var(--color-bg-secondary);
+  transform: translateY(-1px);
+}
+
+.social-fab__link--accent {
+  color: var(--color-accent-purple);
+}
+
+/* ------------------------------------------------------------
+   9. STOPKA
+------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  padding: var(--space-4) 0 calc(var(--space-5) + 3rem); /* dodatkowy odstęp, żeby FAB mobilny nie zasłaniał treści */
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.social-links {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.social-links a {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.social-links a:hover {
+  color: var(--color-text);
+  background: var(--color-surface-solid);
+}
+
+.social-links__accent {
+  color: var(--color-accent-purple);
+}
+
+.site-footer__copyright,
+.site-footer__portfolio,
+.site-footer__data {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.site-footer__portfolio a,
+.site-footer__data a {
+  color: var(--color-accent-blue);
+  font-weight: 600;
+}
+
+/* ============================================================
+   10. KOMPONENTY PROJEKTU
+   ============================================================ */
+
+/* ---------- 10.1 Liczba ze źródłem (.num) ----------
+   Każda liczba z danych to <button class="num">. Kropkowane
+   podkreślenie sygnalizuje, że po najechaniu / fokusie / dotknięciu
+   pojawi się dymek ze źródłem. Wartości wyliczone mają
+   podkreślenie kreskowane, niepewne — pomarańczowy znacznik. */
+.num {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: help;
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.num:hover { text-decoration-color: var(--color-accent-blue); }
+.num--calc { text-decoration-style: dashed; }
+.num--verify::after {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: 0.2em;
+  vertical-align: super;
+  border-radius: 50%;
+  background: #e89400;
+}
+
+/* ---------- 10.2 Dymek źródła (#num-tip) ----------
+   Jeden wspólny element popover="manual" (lub zwykły div, gdy
+   przeglądarka nie zna Popover API), pozycjonowany w app.js. */
+.tip {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  z-index: 200;
+  max-width: min(360px, calc(100vw - 2rem));
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-solid);
+  color: var(--color-text);
+  box-shadow: var(--shadow-glass-hover);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.tip:not([popover]) { display: none; }
+.tip:not([popover]).is-open { display: block; }
+
+.tip__value {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+
+.tip__row { margin: 0.25rem 0 0; color: var(--color-text-muted); }
+.tip__row strong { color: var(--color-text); font-weight: 600; }
+.tip__verify { color: var(--color-text); background: var(--color-warn-bg); border-left: 3px solid #e89400; padding: 0.25rem 0.5rem; border-radius: 4px; }
+.tip__src { margin: 0.5rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--color-border); padding-top: 0.5rem; }
+.tip__src li + li { margin-top: 0.35rem; }
+.tip__src a { color: var(--color-accent-blue); font-weight: 600; text-decoration: underline; text-underline-offset: 0.15em; }
+.tip__src small { display: block; color: var(--color-text-muted); }
+
+/* ---------- 10.3 Plakietki statusu roku ---------- */
+.badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-muted);
+  vertical-align: middle;
+}
+
+/* Kropka koloru serii — używana w legendach i nagłówkach tabel */
+.swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+  margin-right: 0.35rem;
+  vertical-align: -0.05em;
+}
+.swatch--1 { background: var(--series-1); }
+.swatch--2 { background: var(--series-2); }
+.swatch--3 { background: var(--series-3); }
+
+/* ---------- 10.4 Kafelki KPI ---------- */
+.kpi-grid {
+  display: grid;
+  margin-bottom: var(--space-2);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: var(--space-3);
+}
+
+.kpi__label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.35rem;
+}
+
+.kpi__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.kpi__unit { font-size: 0.5em; font-weight: 600; color: var(--color-text-muted); }
+
+.kpi__sub {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin: 0.5rem 0 0;
+}
+
+.delta--up-bad, .delta--down-good { font-weight: 600; }
+.delta--up-bad { color: var(--color-bad); }
+.delta--down-good { color: var(--color-good); }
+.delta--neutral { color: var(--color-text-muted); font-weight: 600; }
+
+/* ---------- 10.5 Wykresy słupkowe (HTML/CSS) ----------
+   Każdy wiersz: etykieta | słupki (1–3 serie). Szerokość słupka
+   ustawiana w app.js jako procent maksimum. Zaokrąglony jest tylko
+   koniec z danymi (4px), początek przylega do osi. */
+.chart {
+  margin: var(--space-2) 0 0;
+  container-type: inline-size;   /* układ wykresu zależy od szerokości KARTY, nie ekranu */
+}
+
+.chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.chart__rows { display: grid; gap: 0.7rem; }
+
+.chart__row {
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Wąska karta: węższa kolumna etykiet */
+@container (max-width: 560px) {
+  .chart__row { grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr); gap: 0.5rem; }
+  .chart__label { font-size: 0.8rem; }
+}
+/* Bardzo wąska karta (telefon): etykieta nad słupkami */
+@container (max-width: 380px) {
+  .chart__row { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; }
+}
+
+.chart__label {
+  font-size: 0.86rem;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.chart__bars { display: grid; gap: 2px; position: relative; }
+
+.chart__bar-line {
+  display: grid;
+  /* kolumna 1 = tor słupka (skala), kolumna 2 = etykieta wartości o stałej
+     szerokości (--value-w ustawiane w app.js), żeby skala była wspólna */
+  grid-template-columns: minmax(0, 1fr) var(--value-w, 7rem);
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 14px;
+}
+
+.chart__bar {
+  height: 14px;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: var(--series-1);
+}
+.chart__bar--2 { background: var(--series-2); }
+.chart__bar--3 { background: var(--series-3); }
+.chart--single .chart__bar { height: 18px; }
+
+.chart__value {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Linie referencyjne (progi) nakładane na obszar słupków */
+.chart__refs { position: absolute; top: -4px; bottom: -4px; left: 0; right: calc(var(--value-w, 7rem) + 0.5rem); pointer-events: none; }
+.chart__ref {
+  position: absolute;
+  top: 0; bottom: 0;
+  border-left: 2px dashed var(--chart-ref);
+}
+.chart__ref-label {
+  position: absolute;
+  top: -1.3rem;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--chart-ref);
+  white-space: nowrap;
+}
+
+/* Wiersz wyróżniony (np. Polska na tle UE) */
+.chart__row--highlight .chart__label { font-weight: 700; }
+.chart__row--highlight .chart__bar { outline: 2px solid var(--color-text); outline-offset: 1px; }
+
+/* Pionowe słupki — porównanie lat (strona główna) */
+.vchart {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  align-items: end;
+  height: 240px;
+  border-bottom: 1px solid var(--chart-grid);
+  margin-top: var(--space-2);
+}
+.vchart__group { display: flex; align-items: flex-end; justify-content: center; gap: 2px; height: 100%; }
+.vchart__bar {
+  width: min(42px, 40%);
+  border-radius: 4px 4px 0 0;
+  background: var(--series-1);
+  position: relative;
+}
+.vchart__bar--2 { background: var(--series-2); }
+.vchart__labels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  text-align: center;
+  font-size: 0.82rem;
+  margin-top: 0.4rem;
+}
+.vchart__labels strong { display: block; font-family: var(--font-mono); font-size: 0.85rem; }
+.vchart__labels span { color: var(--color-text-muted); }
+
+/* Pasek postępu (wykonanie budżetu w trakcie roku) */
+.progress { display: grid; gap: 0.9rem; margin-top: var(--space-2); }
+.progress__head { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.88rem; }
+.progress__track {
+  position: relative;
+  height: 12px;
+  border-radius: 4px;
+  background: var(--chart-track);
+  overflow: visible;
+}
+.progress__fill { height: 100%; border-radius: 4px; background: var(--series-1); }
+.progress__marker {
+  position: absolute;
+  top: -4px; bottom: -4px;
+  border-left: 2px solid var(--color-text);
+}
+
+/* ---------- 10.6 Przełącznik segmentowy (wybór roku/wariantu) ---------- */
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  margin: 0 0 var(--space-2);
+}
+.seg button {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 7px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--color-surface-solid);
+  color: var(--color-text);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+}
+
+/* ---------- 10.7 Tabele danych ---------- */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+.data-table caption {
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  font-weight: 600;
+  caption-side: top;
+}
+.data-table th, .data-table td {
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.data-table thead th {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  position: sticky;
+  top: 0;
+}
+.data-table td.n, .data-table th.n {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.data-table tbody tr:hover { background: var(--color-bg-secondary); }
+.data-table tfoot td { font-weight: 700; border-bottom: 0; }
+
+/* Rozwijany widok tabeli pod wykresem */
+details.more { margin-top: var(--space-2); }
+details.more > summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-accent-blue);
+  width: fit-content;
+}
+
+/* ---------- 10.8 Ramki objaśnień ---------- */
+.callout {
+  border-left: 4px solid var(--color-accent-blue);
+  background: var(--color-bg-secondary);
+  padding: 0.8rem 1rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.92rem;
+  margin: var(--space-2) 0 0;
+}
+.callout--warn { border-left-color: #e89400; background: var(--color-warn-bg); }
+.callout p:last-child { margin-bottom: 0; }
+
+.muted { color: var(--color-text-muted); }
+.small { font-size: 0.86rem; }
+
+.list-tight { margin: 0; padding-left: 1.2rem; }
+.list-tight li + li { margin-top: 0.4rem; }
+
+/* Linki w treści */
+.prose a, .glass-card p a, .glass-card li a, .callout a {
+  color: var(--color-accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Karty-linki do podstron */
+.link-card { display: block; }
+.link-card h2 { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.link-card h2::after { content: "→"; font-family: var(--font-body); color: var(--color-accent-blue); }
+.link-card:hover { transform: translateY(-2px); }
+
+/* Słowniczek */
+.glossary dt {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-top: var(--space-3);
+  scroll-margin-top: 6rem;
+}
+.glossary dt:first-child { margin-top: 0; }
+.glossary dd { margin: 0.35rem 0 0; }
+
+/* Komunikat ładowania / błędu danych */
+.data-status { font-size: 0.9rem; color: var(--color-text-muted); }
+.data-status--error { color: var(--color-bad); }
+
+/* Tryb wymuszonych kolorów (Windows High Contrast) — słupki
+   dostają obramowanie, żeby nie zniknęły */
+@media (forced-colors: active) {
+  .chart__bar, .vchart__bar, .progress__fill { forced-color-adjust: none; border: 1px solid CanvasText; }
+}
+
+/* Druk — bez szkła i FAB-a */
+@media print {
+  .site-header, .social-fab, .seg, .theme-toggle { display: none !important; }
+  .glass-card { box-shadow: none; backdrop-filter: none; background: #fff; }
+  details.more { display: block; }
+}
