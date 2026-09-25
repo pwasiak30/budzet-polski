@@ -5,7 +5,7 @@
 import os
 OUT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-NAV = [("index.html", "Start"), ("dochody.html", "Dochody"), ("wydatki.html", "Wydatki"), ("dlug.html", "Deficyt i dług"),
+NAV = [("index.html", "Start"), ("kalkulator.html", "Twoje podatki"), ("dochody.html", "Dochody"), ("wydatki.html", "Wydatki"), ("dlug.html", "Deficyt i dług"),
        ("slowniczek.html", "Słowniczek"), ("metodologia.html", "Metodologia"), ("zrodla.html", "Źródła")]
 
 SPRITE = open(os.path.join(os.path.dirname(__file__), "sprite.html"), encoding="utf-8").read()
@@ -132,8 +132,8 @@ START = f'''
         w jednym miejscu. Przy każdej liczbie jest źródło, a duże kwoty przeliczamy na mieszkańca.
       </p>
       <div class="hero__actions">
-        <a href="wydatki.html" class="btn btn--primary">Na co idą pieniądze</a>
-        <a href="dlug.html" class="btn btn--ghost">Deficyt i dług</a>
+        <a href="kalkulator.html" class="btn btn--primary">Policz swoje podatki</a>
+        <a href="wydatki.html" class="btn btn--ghost">Na co idą pieniądze</a>
       </div>
     </section>
 
@@ -479,6 +479,113 @@ METODOLOGIA = '''
     </section>
 '''
 
+KALKULATOR = f'''
+    <section class="hero hero--page container">
+      <p class="eyebrow">Kalkulator · liczy się w Twojej przeglądarce, nic nie jest wysyłane</p>
+      <h1 class="hero__title">Twoja pensja a budżet państwa</h1>
+      <p class="hero__lead">Wpisz wynagrodzenie brutto albo netto. Policzymy podatki i składki od pensji, szacunkowy VAT
+        i akcyzę z Twoich zakupów, pokażemy, kto dostaje te pieniądze — i na co budżet państwa wyda swoją część.</p>
+      {HOW_TO}
+    </section>
+
+    <section class="bento container">
+      <div class="bento-grid">
+
+        <!-- FORMULARZ: pensja -->
+        <article class="glass-card bento-item">
+          <h2>Twoja pensja</h2>
+          <form id="calc-form" class="calc-form" novalidate>
+            <fieldset class="choice">
+              <legend>Źródło dochodu</legend>
+              <label><input type="radio" name="typ" value="uop" checked> Umowa o pracę</label>
+              <label><input type="radio" name="typ" value="emeryt"> Emerytura / renta</label>
+            </fieldset>
+
+            <fieldset class="choice">
+              <legend>Wpisuję kwotę</legend>
+              <label><input type="radio" name="tryb" value="brutto" checked> brutto</label>
+              <label><input type="radio" name="tryb" value="netto"> netto (na rękę)</label>
+            </fieldset>
+
+            <label class="field">
+              <span class="field__label">Kwota miesięcznie (zł)</span>
+              <input type="number" id="kwota" name="kwota" inputmode="decimal" min="0" max="1000000" step="1" value="9473" required>
+              <span class="field__hint" id="kwota-hint">Domyślnie: prognoza przeciętnego wynagrodzenia brutto na 2026 r.</span>
+            </label>
+
+            <fieldset class="choice choice--stack" id="uop-options">
+              <legend>Dodatkowo</legend>
+              <label><input type="checkbox" name="kup300"> Dojeżdżam do pracy z innej miejscowości (koszty 300 zł)</label>
+              <label><input type="checkbox" name="mlody"> Mam mniej niż 26 lat (ulga dla młodych)</label>
+            </fieldset>
+
+            <label class="field">
+              <span class="field__label">Zasady podatkowe</span>
+              <select id="rok" name="rok">
+                <option value="2026" selected>2026 — obowiązujące</option>
+                <option value="2027">2027 — projekt rządu (nowe progi PIT)</option>
+              </select>
+            </label>
+          </form>
+        </article>
+
+        <!-- WYNIK: podsumowanie -->
+        <article class="glass-card bento-item bento-item--wide" aria-live="polite">
+          <h2>Wynik miesięcznie</h2>
+          <div class="calc-kpis" id="calc-kpis"></div>
+          <div id="calc-payslip"></div>
+        </article>
+
+        <!-- FORMULARZ: wydatki -->
+        <article class="glass-card bento-item bento-item--full">
+          <h2>Twoje wydatki (VAT i akcyza)</h2>
+          <p class="muted small">Podatki pośrednie płacisz przy każdym zakupie — są ukryte w cenie. Pola wypełniliśmy przykładowo
+            (udziały zbliżone do struktury wydatków gospodarstw domowych GUS). Wpisz własne kwoty, żeby wynik był dokładniejszy.</p>
+          <div class="expenses" id="expenses"></div>
+          <div class="calc-actions">
+            <button type="button" class="btn btn--ghost" id="fill-basket">Wypełnij przykładowo wg pensji</button>
+            <p class="small" id="basket-check" aria-live="polite"></p>
+          </div>
+          <details class="more"><summary>Założenia do cen</summary>
+            <div class="calc-assumptions" id="assumptions"></div>
+          </details>
+        </article>
+
+        <!-- GDZIE TRAFIAJĄ PIENIĄDZE -->
+        <article class="glass-card bento-item bento-item--wide">
+          <h2>Kto dostaje Twoje pieniądze</h2>
+          <p class="muted small">Rocznie. Składki i podatki trafiają do różnych „kas” — tylko część do budżetu państwa.</p>
+          <div id="calc-flows"></div>
+        </article>
+
+        <article class="glass-card bento-item">
+          <h2>Ty a budżet</h2>
+          <div id="calc-budget-summary"></div>
+        </article>
+
+        <!-- NA CO BUDŻET WYDA TWOJE PODATKI -->
+        <article class="glass-card bento-item bento-item--full">
+          <h2 id="alloc-title">Na co budżet państwa wyda Twoje podatki</h2>
+          <p class="muted small" id="alloc-lead"></p>
+          <div id="calc-alloc"></div>
+          <details class="more"><summary>Wybrane programy i wydatki</summary><div id="calc-items"></div></details>
+        </article>
+
+        <article class="glass-card bento-item bento-item--full">
+          <h2>Czego ten kalkulator nie liczy</h2>
+          <ul class="list-tight small">
+            <li>CIT, podatku bankowego i podatków płaconych przez firmy — część z nich przerzucana jest na klientów w cenach, ale nie da się tego uczciwie przypisać jednej osobie.</li>
+            <li>Akcyzy na alkohol i płyn do e-papierosów (stawki do weryfikacji) — dla tych kategorii liczymy tylko VAT, więc wynik jest zaniżony.</li>
+            <li>PPK, 13. i 14. emerytury, premii, nadgodzin i ulg w zeznaniu rocznym (np. na dzieci) — PIT liczymy jako średnią miesięczną z roku.</li>
+            <li>Podziału VAT i akcyzy na samorządy — w całości trafiają do budżetu państwa.</li>
+            <li>Wariant 2027 to projekt ustawy: przyjęliśmy dzisiejszą kwotę wolną (30 000 zł) i limit składek ZUS z 2026 r.</li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+'''
+
 ZRODLA = '''
     <section class="hero hero--page container">
       <p class="eyebrow">Źródła</p>
@@ -502,6 +609,7 @@ ZRODLA = '''
 
 PAGES = [
   ("index.html", "Start", "Budżet Polski 2025–2027: dochody, wydatki, deficyt i dług z źródłem przy każdej liczbie i przeliczeniem na mieszkańca.", "start", START),
+  ("kalkulator.html", "Twoje podatki", "Kalkulator: wpisz pensję brutto lub netto i zobacz, ile płacisz podatków i składek, kto je dostaje i na co budżet państwa je wyda.", "kalkulator", KALKULATOR),
   ("dochody.html", "Dochody", "Skąd państwo ma pieniądze: VAT, akcyza, CIT, PIT i dochody niepodatkowe w latach 2025–2027 oraz zmiany podatkowe w projekcie 2027.", "dochody", DOCHODY),
   ("wydatki.html", "Wydatki", "Na co idą pieniądze z budżetu państwa: wydatki według działów 2025–2027, największe pozycje i fundusze poza budżetem.", "wydatki", WYDATKI),
   ("dlug.html", "Deficyt i dług", "Deficyt i dług publiczny Polski: cztery definicje długu, progi 55% i 60% PKB, porównanie z krajami UE.", "dlug", DLUG),
