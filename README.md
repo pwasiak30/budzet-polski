@@ -11,6 +11,7 @@ Czysty HTML/CSS/JS, bez frameworków i bez kroku budowania. Styl: Forge UI.
 ```
 budzet-polski/
 ├── index.html          Start — przegląd trzech lat
+├── kalkulator.html     Twoja pensja: podatki, składki, VAT/akcyza i na co idą
 ├── dochody.html        Dochody wg źródeł, zmiany podatkowe 2027
 ├── wydatki.html        Wydatki wg działów, fundusze poza budżetem
 ├── dlug.html           Deficyt, dług (4 definicje), porównanie z UE
@@ -59,7 +60,7 @@ Branch: `main`, folder `/ (root)` → Save**. Strona będzie pod
 
 ## Zmiana treści podstron
 
-Nagłówek, nawigacja, social FAB i stopka są identyczne na 7 stronach, więc strony generuje
+Nagłówek, nawigacja, social FAB i stopka są identyczne na 8 stronach, więc strony generuje
 skrypt. Treść edytuj w `tools/build_pages.py`, potem:
 
 ```bash
