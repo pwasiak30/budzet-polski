@@ -962,6 +962,83 @@ details.more > summary {
 .data-status { font-size: 0.9rem; color: var(--color-text-muted); }
 .data-status--error { color: var(--color-bad); }
 
+/* ---------- 10.9 Kalkulator: formularze ----------
+   Pola używają zmiennych motywu; duże pola dotykowe (min. 44px). */
+.calc-form { display: grid; gap: var(--space-2); }
+
+.choice {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+}
+.choice legend {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.35rem;
+  padding: 0;
+}
+.choice label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.92rem; cursor: pointer; min-height: 32px; }
+.choice--stack { flex-direction: column; gap: 0.3rem; }
+.choice--stack label { align-items: flex-start; }
+.choice input { accent-color: var(--color-accent-blue); width: 1.05rem; height: 1.05rem; margin: 0.15rem 0 0; flex: none; }
+
+.field { display: grid; gap: 0.3rem; }
+.field__label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-text-muted); }
+.field__label small { display: block; font-family: var(--font-body); font-size: 0.75rem; opacity: 0.85; }
+.field__hint { font-size: 0.78rem; color: var(--color-text-muted); }
+
+.field input, .field select, .inline-field input {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface-solid);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  min-height: 44px;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+.field input:focus-visible, .field select:focus-visible, .inline-field input:focus-visible {
+  outline: 2px solid var(--color-accent-blue);
+  outline-offset: 2px;
+}
+#kwota { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+
+/* Siatka pól wydatków */
+.expenses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-2);
+}
+.field--row { grid-template-columns: minmax(0, 1fr) 8.5rem; align-items: center; gap: 0.75rem; }
+.field--row .field__label { font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); }
+.field__input { display: flex; align-items: center; gap: 0.4rem; }
+.field__input span { color: var(--color-text-muted); font-size: 0.85rem; }
+
+.inline-field { display: inline-flex; align-items: center; gap: 0.3rem; }
+.inline-field input { width: 6.5rem; min-height: 36px; padding: 0.3rem 0.5rem; font-size: 0.9rem; }
+
+.calc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-3); }
+.calc-actions p { margin: 0; }
+
+/* Wynik — mniejsze KPI w jednej karcie */
+.calc-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 125px), 1fr));
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+.calc-kpi { padding: 0.75rem 0.9rem; border-radius: var(--radius-sm); background: var(--color-bg-secondary); }
+.kpi__value--sm { font-size: clamp(1.4rem, 3vw, 1.8rem); }
+
+[hidden] { display: none !important; }
+
 /* Tryb wymuszonych kolorów (Windows High Contrast) — słupki
    dostają obramowanie, żeby nie zniknęły */
 @media (forced-colors: active) {

@@ -5,7 +5,8 @@
    2. Formatowanie liczb (polski zapis, przeliczenie na mieszkańca)
    3. Rejestr liczb ze źródłami + dymek (tooltip) ze źródłem
    4. Wykresy słupkowe HTML/CSS i tabele
-   5. Renderery podstron (wybierane przez <body data-page="...">)
+   5. Renderery podstron (wybierane przez <body data-page="...">),
+      w tym kalkulator „Twoja pensja a budżet”
    6. Wczytanie danych z data/budzet.json i start
    Wszystkie liczby na stronie pochodzą z budzet.json — żeby
    zaktualizować stronę, edytuj tylko ten plik.
@@ -699,6 +700,289 @@
         return [k === 'Polska' ? '<strong>Polska</strong>' : esc(k)].concat(f.map(function (x) { return num(mk(cof.kraje[k][x[0]], cof.src), { unit: '%' }); }));
       })
     });
+  };
+
+  /* ===== KALKULATOR: TWOJA PENSJA A BUDŻET =====
+     Liczy wszystko rocznie, a pokazuje średnią miesięczną.
+     Parametry (stawki ZUS, skala PIT, akcyza, ceny) pochodzą
+     z budzet.json → parametry_podatkowe. Założenia są opisane
+     w dymkach wyników (pole „wyliczone”). */
+  pages.kalkulator = function () {
+    var P = D.parametry_podatkowe;
+    var P26 = P['2026'];
+    var AK = P.akcyza_2026, OP = P.oplata_paliwowa_2026, CENY = P.ceny_referencyjne;
+    var SRC_PL = P26.src;                        // parametry płacowe
+    var SRC_AK = AK.src, SRC_OP = OP.src;
+
+    /* Podział PIT: budżet państwa vs samorządy (projekt 2027) */
+    var pitBP = L('2027').dochody.podatki.filter(function (t) { return t.klucz === 'pit'; })[0].v;
+    var pitJST = L('2027').udzialy_jst_w_pit.v;
+    var SHARE_JST = pitJST / (pitJST + pitBP);
+
+    var form = document.getElementById('calc-form');
+    var kwota = document.getElementById('kwota');
+
+    /* ---------- Skala PIT ---------- */
+    function pitScale(podstawa, rok) {
+      var p = Math.max(0, Math.round(podstawa));
+      var t;
+      if (rok === '2027') {
+        // projekt 2027: 12% do 130 tys., 24% 130–150 tys., 32% powyżej; kwota zmniejszająca jak w 2026
+        t = 0.12 * Math.min(p, 130000) + 0.24 * Math.max(0, Math.min(p, 150000) - 130000) + 0.32 * Math.max(0, p - 150000) - P26.pit.kwota_zmniejszajaca_mies * 12;
+      } else {
+        t = p <= P26.pit.prog_roczny
+          ? P26.pit.stawka_1 * p - P26.pit.kwota_zmniejszajaca_mies * 12
+          : P26.pit.stawka_1 * P26.pit.prog_roczny - P26.pit.kwota_zmniejszajaca_mies * 12 + P26.pit.stawka_2 * (p - P26.pit.prog_roczny);
+      }
+      return Math.max(0, Math.round(t));
+    }
+
+    /* ---------- Umowa o pracę: roczne kwoty z brutto miesięcznego ---------- */
+    function uop(bruttoMies, o) {
+      var B = bruttoMies * 12;
+      var z = P26.zus_pracownik, zp = P26.zus_pracodawca;
+      var baseLim = Math.min(B, z.limit_30_krotnosci_roczny);   // emerytalna i rentowa do limitu 30-krotności
+      var r = {};
+      r.brutto = B;
+      r.emerytalna = z.emerytalna * baseLim;
+      r.rentowa = z.rentowa * baseLim;
+      r.chorobowa = z.chorobowa * B;
+      r.zus = r.emerytalna + r.rentowa + r.chorobowa;
+      r.zdrowotna = P26.zdrowotna.stawka * (B - r.zus);
+      var exempt = o.mlody ? Math.min(B, P26.ulga_dla_mlodych_limit.v) : 0;
+      var taxableRev = B - exempt;
+      var kup = taxableRev > 0 ? (o.kup300 ? P26.pit.koszty_uzyskania_mies.podwyzszone : P26.pit.koszty_uzyskania_mies.podstawowe) * 12 : 0;
+      var zusTaxable = B > 0 ? r.zus * taxableRev / B : 0;       // składki od przychodu zwolnionego nie pomniejszają dochodu
+      r.podstawa = Math.max(0, taxableRev - zusTaxable - kup);
+      r.pit = pitScale(r.podstawa, o.rok);
+      r.netto = B - r.zus - r.zdrowotna - r.pit;
+      // składki pracodawcy (koszt pracy ponad brutto)
+      r.pr_emerytalna = zp.emerytalna * baseLim;
+      r.pr_rentowa = zp.rentowa * baseLim;
+      r.pr_wypadkowa = zp.wypadkowa_typowa * B;
+      r.pr_fp = zp.fp_i_fs * B;
+      r.pr_fgsp = zp.fgsp * B;
+      r.pracodawca = r.pr_emerytalna + r.pr_rentowa + r.pr_wypadkowa + r.pr_fp + r.pr_fgsp;
+      r.kosztPracy = B + r.pracodawca;
+      return r;
+    }
+
+    /* ---------- Emerytura: zdrowotna 9% od brutto, PIT bez kosztów uzyskania ---------- */
+    function emeryt(bruttoMies, o) {
+      var B = bruttoMies * 12;
+      var r = { brutto: B, emerytalna: 0, rentowa: 0, chorobowa: 0, zus: 0, pracodawca: 0,
+                pr_emerytalna: 0, pr_rentowa: 0, pr_wypadkowa: 0, pr_fp: 0, pr_fgsp: 0 };
+      r.zdrowotna = P26.zdrowotna.stawka * B;
+      r.podstawa = B;
+      r.pit = pitScale(B, o.rok);
+      r.netto = B - r.zdrowotna - r.pit;
+      r.kosztPracy = B;
+      return r;
+    }
+
+    /* Netto → brutto: szukanie połówkowe (funkcja netto(brutto) jest rosnąca) */
+    function fromNetto(nettoMies, calc, o) {
+      var lo = 0, hi = Math.max(1000, nettoMies * 3);
+      for (var i = 0; i < 60; i++) {
+        var mid = (lo + hi) / 2;
+        if (calc(mid, o).netto / 12 < nettoMies) lo = mid; else hi = mid;
+      }
+      return (lo + hi) / 2;
+    }
+
+    /* ---------- Wydatki i podatki pośrednie (miesięcznie) ---------- */
+    var EXP = [
+      { key: 'jedzenie', label: 'Jedzenie i napoje bezalkoholowe', share: 0.25, note: 'VAT 5%' },
+      { key: 'paliwo', label: 'Paliwo (benzyna)', share: 0.06, note: 'VAT 23% + akcyza + opłata paliwowa' },
+      { key: 'energia', label: 'Prąd i gaz', share: 0.07, note: 'VAT 23% (akcyza na prąd pominięta — ok. 0,5% ceny)' },
+      { key: 'papierosy', label: 'Papierosy', share: 0, note: 'VAT 23% + akcyza kwotowa i procentowa' },
+      { key: 'epapierosy', label: 'E-papierosy i liquidy', share: 0, note: 'tylko VAT 23% — akcyza do weryfikacji' },
+      { key: 'alkohol', label: 'Alkohol', share: 0, note: 'tylko VAT 23% — akcyza pominięta' },
+      { key: 'vat23', label: 'Pozostałe zakupy (ubrania, elektronika, chemia, telefon, internet)', share: 0.22, note: 'VAT 23%' },
+      { key: 'vat8', label: 'Usługi z VAT 8% (restauracje, bilety, hotele, woda)', share: 0.08, note: 'VAT 8%' },
+      { key: 'bezvat', label: 'Bez VAT (czynsz, najem, raty, leczenie, oszczędności)', share: 0.32, note: 'bez podatków pośrednich' }
+    ];
+
+    var box = document.getElementById('expenses');
+    box.innerHTML = EXP.map(function (e) {
+      return '<label class="field field--row"><span class="field__label">' + esc(e.label) + '<small>' + esc(e.note) + '</small></span>' +
+        '<span class="field__input"><input type="number" inputmode="decimal" min="0" step="1" data-exp="' + e.key + '" value="0"><span aria-hidden="true">zł</span></span></label>';
+    }).join('');
+
+    var cenaBenzyny = CENY.benzyna_95_zl_l.v, cenaPaczki = CENY.paczka_papierosow_zl.v;
+    document.getElementById('assumptions').innerHTML =
+      '<p class="small">Cena benzyny: <label class="inline-field"><input type="number" id="cena-benzyny" step="0.01" min="1" value="' + cenaBenzyny + '"> zł/l</label> (średnia krajowa: ' + num(CENY.benzyna_95_zl_l, { unit: 'zł/l', dec: 2 }) + '). ' +
+      'Akcyza ' + num(mk(AK.benzyna_zl_1000l / 1000, SRC_AK), { unit: 'zł/l', dec: 3 }) + ', opłata paliwowa ' + num(mk(OP.benzyna_zl_1000l / 1000, SRC_OP), { unit: 'zł/l', dec: 3 }) + '.</p>' +
+      '<p class="small">Cena paczki papierosów (20 szt.): <label class="inline-field"><input type="number" id="cena-paczki" step="0.01" min="1" value="' + cenaPaczki + '"> zł</label> (' + num(CENY.paczka_papierosow_zl, { unit: 'zł', dec: 2 }) + '). ' +
+      'Akcyza: ' + num(mk(AK.papierosy.kwotowa_zl_1000szt, SRC_AK), { unit: 'zł/1000 szt.', dec: 2 }) + ' + ' + num(mk(AK.papierosy.procentowa_ceny_detalicznej * 100, SRC_AK), { unit: '% ceny', dec: 2 }) + '.</p>' +
+      '<p class="small">VAT w cenie brutto: stawka 23% = 18,7% ceny, 8% = 7,4% ceny, 5% = 4,8% ceny.</p>';
+
+    var touched = false;
+    var lastNetto = 0;
+    function fillBasket(nettoMies) {
+      box.querySelectorAll('input[data-exp]').forEach(function (inp) {
+        var e = EXP.filter(function (x) { return x.key === inp.getAttribute('data-exp'); })[0];
+        inp.value = Math.round(nettoMies * e.share);
+      });
+    }
+
+    function indirect() {
+      var v = {}; box.querySelectorAll('input[data-exp]').forEach(function (i) { v[i.getAttribute('data-exp')] = Math.max(0, parseFloat(i.value) || 0); });
+      var pb = parseFloat(document.getElementById('cena-benzyny').value) || cenaBenzyny;
+      var pp = parseFloat(document.getElementById('cena-paczki').value) || cenaPaczki;
+      var vat23 = function (x) { return x * 23 / 123; };
+      var litry = v.paliwo / pb, paczki = v.papierosy / pp;
+      var r = {};
+      r.vat = v.jedzenie * 5 / 105 + vat23(v.paliwo) + vat23(v.energia) + vat23(v.papierosy) + vat23(v.epapierosy) + vat23(v.alkohol) + vat23(v.vat23) + v.vat8 * 8 / 108;
+      r.akcyza = litry * AK.benzyna_zl_1000l / 1000 + paczki * 20 / 1000 * AK.papierosy.kwotowa_zl_1000szt + v.papierosy * AK.papierosy.procentowa_ceny_detalicznej;
+      r.oplata = litry * OP.benzyna_zl_1000l / 1000;
+      r.suma = Object.keys(v).reduce(function (s, k) { return s + v[k]; }, 0);
+      return r;   // miesięcznie
+    }
+
+    /* ---------- Rysowanie wyników ---------- */
+    function Z(v, src, wyl, extra) { return mk(Math.round(v), src, Object.assign({ wyliczone: wyl }, extra || {})); }
+    function zlNum(val, label) { return num(val, { unit: 'zł', dec: 0, label: label }); }
+
+    function run() {
+      var fd = new FormData(form);
+      var o = { typ: fd.get('typ'), tryb: fd.get('tryb'), kup300: !!fd.get('kup300'), mlody: !!fd.get('mlody'), rok: fd.get('rok') };
+      document.getElementById('uop-options').hidden = o.typ !== 'uop';
+      var amount = Math.max(0, parseFloat(kwota.value) || 0);
+      var calc = o.typ === 'uop' ? uop : emeryt;
+      var bruttoMies = o.tryb === 'brutto' ? amount : fromNetto(amount, calc, o);
+      var r = calc(bruttoMies, o);
+      var m = function (x) { return x / 12; };
+      var nettoMies = m(r.netto);
+      lastNetto = nettoMies;
+      if (!touched) fillBasket(nettoMies);
+      var ind = indirect();
+
+      var rokTxt = o.rok === '2027' ? 'projekt 2027' : 'zasady 2026';
+      var srcPIT = o.rok === '2027' ? SRC_PL.concat(['mf_uzas_2027']) : SRC_PL;
+      var srcMlody = o.mlody ? ['mf_kas_mlodzi'] : [];
+
+      var directM = m(r.zus + r.zdrowotna + r.pit);
+      var indirectM = ind.vat + ind.akcyza + ind.oplata;
+      var employerM = m(r.pracodawca);
+      var totalM = directM + indirectM + employerM;
+      var costM = m(r.kosztPracy);
+
+      // KPI
+      document.getElementById('calc-kpis').innerHTML = [
+        ['Brutto', Z(m(r.brutto), SRC_PL, o.tryb === 'netto' ? 'wyliczone z netto (' + rokTxt + ')' : 'wpisana kwota')],
+        ['Netto (na rękę)', Z(nettoMies, srcPIT.concat(srcMlody), 'brutto − składki ZUS − zdrowotna − PIT (' + rokTxt + ', średnio miesięcznie)')],
+        [o.typ === 'uop' ? 'Koszt pracodawcy' : 'Wypłata brutto', Z(costM, SRC_PL, o.typ === 'uop' ? 'brutto + składki pracodawcy (emerytalna, rentowa, wypadkowa 1,67%, FP+FS, FGŚP); bez PPK' : 'emerytura brutto')],
+        ['Wszystkie podatki i składki', Z(totalM, SRC_PL.concat(SRC_AK, SRC_OP), 'składki i PIT od pensji + ' + (o.typ === 'uop' ? 'składki pracodawcy + ' : '') + 'VAT, akcyza i opłata paliwowa z wydatków')]
+      ].map(function (k, i) {
+        var extra = i === 3 ? '<p class="kpi__sub">' + fmt(totalM / costM * 100, 0) + '% ' + (o.typ === 'uop' ? 'kosztu Twojej pracy' : 'emerytury brutto') + '</p>' : '';
+        return '<div class="calc-kpi"><p class="kpi__label">' + esc(k[0]) + '</p><p class="kpi__value kpi__value--sm">' + num(k[1], { unit: 'zł', dec: 0, text: fmt(k[1].v, 0), label: k[0] }) + '<span class="kpi__unit"> zł</span></p>' + extra + '</div>';
+      }).join('');
+
+      // „Pasek wypłaty”
+      var rows = [];
+      if (o.typ === 'uop') {
+        rows.push(['Składka emerytalna (9,76%)', Z(m(r.emerytalna), SRC_PL, '9,76% brutto (do limitu 30-krotności)'), 'ZUS — Twoje konto emerytalne']);
+        rows.push(['Składka rentowa (1,5%)', Z(m(r.rentowa), SRC_PL, '1,5% brutto'), 'ZUS']);
+        rows.push(['Składka chorobowa (2,45%)', Z(m(r.chorobowa), SRC_PL, '2,45% brutto'), 'ZUS']);
+      }
+      rows.push(['Składka zdrowotna (9%)', Z(m(r.zdrowotna), SRC_PL, o.typ === 'uop' ? '9% × (brutto − składki społeczne)' : '9% emerytury brutto'), 'NFZ']);
+      rows.push(['Podatek PIT', Z(m(r.pit), srcPIT.concat(srcMlody), 'skala PIT (' + rokTxt + ') od rocznej podstawy ' + fmt(r.podstawa, 0) + ' zł, minus kwota zmniejszająca 3600 zł rocznie' + (o.mlody ? '; przychód do limitu ulgi dla młodych zwolniony' : '')), 'ok. ' + fmt(SHARE_JST * 100, 0) + '% samorządy, reszta budżet państwa']);
+      rows.push(['<strong>Netto</strong>', Z(nettoMies, srcPIT, 'brutto − powyższe'), 'Ty']);
+      if (o.typ === 'uop') {
+        rows.push(['Składki pracodawcy (ponad brutto)', Z(employerM, SRC_PL, 'emerytalna 9,76%, rentowa 6,5%, wypadkowa 1,67% (typowa), Fundusz Pracy i Solidarnościowy 2,45%, FGŚP 0,1%'), 'ZUS, Fundusz Pracy, FGŚP']);
+      }
+      table(document.getElementById('calc-payslip'), {
+        cols: [{ head: 'Pozycja · dokąd trafia' }, { head: 'Miesięcznie', cls: 'n' }],
+        rows: rows.map(function (r0) { return [r0[0] + '<br><span class="small muted" style="font-weight:400">' + esc(r0[2]) + '</span>', zlNum(r0[1], r0[0].replace(/<[^>]+>/g, ''))]; })
+      });
+
+      // Sprawdzenie koszyka
+      var diff = nettoMies - ind.suma;
+      document.getElementById('basket-check').innerHTML = 'Suma wydatków: <strong>' + fmt(ind.suma, 0) + ' zł</strong> · ' +
+        (Math.abs(diff) < 1 ? 'równa pensji netto.' : diff > 0 ? 'zostaje ' + fmt(diff, 0) + ' zł z pensji netto (bez podatków pośrednich).' : '<span class="delta--up-bad">o ' + fmt(-diff, 0) + ' zł więcej niż netto.</span>');
+
+      // Przepływy roczne
+      var Y = function (x) { return x * 12; };
+      var pitJ = r.pit * SHARE_JST, pitB = r.pit - pitJ;
+      var zusAll = r.zus + r.pr_emerytalna + r.pr_rentowa + r.pr_wypadkowa;
+      var flows = [
+        { label: 'Budżet państwa (VAT, akcyza, część PIT)', v: Y(ind.vat + ind.akcyza) + pitB, wyl: 'VAT + akcyza z wydatków ×12 + ' + fmt((1 - SHARE_JST) * 100, 0) + '% PIT', src: SRC_AK.concat(['mf_uzas_2027']) },
+        { label: 'ZUS — emerytury, renty, zasiłki', v: zusAll, wyl: 'składki społeczne pracownika' + (o.typ === 'uop' ? ' i pracodawcy (emerytalna, rentowa, wypadkowa)' : ''), src: SRC_PL },
+        { label: 'NFZ — leczenie', v: r.zdrowotna, wyl: 'składka zdrowotna ×12', src: SRC_PL },
+        { label: 'Samorządy (gmina, powiat, województwo)', v: pitJ, wyl: fmt(SHARE_JST * 100, 1) + '% PIT — udział JST w projekcie 2027 (' + fmt(pitJST) + ' z ' + fmt(pitJST + pitBP) + ' mld zł)', src: ['mf_uzas_2027'] },
+        { label: 'Fundusz Pracy, Solidarnościowy, FGŚP', v: r.pr_fp + r.pr_fgsp, wyl: 'składki pracodawcy 2,45% + 0,1%', src: SRC_PL },
+        { label: 'Fundusze drogowe (opłata paliwowa)', v: Y(ind.oplata), wyl: 'opłata paliwowa × litry ×12', src: SRC_OP }
+      ].filter(function (f) { return f.v > 0.5; });
+      hbar(document.getElementById('calc-flows'), {
+        series: [{ name: 'rocznie', cls: 1 }], unit: 'zł', dec: 0,
+        rows: flows.map(function (f) { return { label: f.label, values: [Z(f.v, f.src, f.wyl)] }; })
+      });
+
+      // Ty a budżet
+      var yb = o.rok === '2027' ? '2027' : '2026';
+      var B_ = L(yb);
+      var contrib = Y(ind.vat + ind.akcyza) + pitB;
+      var ratio = B_.wydatki.ogolem.v / B_.dochody.ogolem.v;
+      var perPersonSpend = perPerson(B_.wydatki.ogolem.v);
+      document.getElementById('calc-budget-summary').innerHTML =
+        '<p>Do budżetu państwa wpłacasz rocznie ok. <strong>' + zlNum(Z(contrib, SRC_AK.concat(['mf_uzas_2027']), 'VAT + akcyza + część PIT'), 'Twój wkład do budżetu państwa') + '</strong>.</p>' +
+        '<p>Budżet ' + yb + ' wydaje ' + num(mk(ratio, B_.wydatki.ogolem.src.concat(B_.dochody.ogolem.src), { wyliczone: 'wydatki / dochody budżetu ' + yb }), { unit: 'zł', dec: 2 }) + ' na każdą złotówkę dochodów. Na Twoje ' + fmt(contrib, 0) +
+        ' zł przypada więc ok. <strong>' + zlNum(Z(contrib * (ratio - 1), B_.deficyt.src, 'Twój wkład × (wydatki/dochody − 1)'), 'Pożyczone „na Ciebie”') + '</strong> wydatków finansowanych długiem.</p>' +
+        '<p class="small muted">Dla porównania: wydatki budżetu na jednego mieszkańca to ' + zlNum(Z(perPersonSpend, B_.wydatki.ogolem.src.concat(['gus_ludnosc_2025']), 'wydatki budżetu / ludność'), 'Wydatki na mieszkańca') + ' rocznie.</p>';
+
+      // Na co budżet wyda Twój wkład
+      document.getElementById('alloc-title').textContent = 'Na co budżet państwa wyda Twoje ' + fmt(contrib, 0) + ' zł rocznie';
+      document.getElementById('alloc-lead').textContent = 'Twój wkład rozłożony proporcjonalnie na działy wydatków budżetu ' + yb + ' (' + (yb === '2027' ? 'projekt' : 'ustawa') + '). Podatki nie są „znaczone” — to udział, nie konkretne przelewy.';
+      var dz = dzialy(yb).filter(function (d) { return d.val.v > 0; }).sort(function (a, b) { return b.val.v - a.val.v; });
+      var tot = B_.wydatki.ogolem.v;
+      var top = dz.slice(0, 10), restV = dz.slice(10).reduce(function (s, d) { return s + d.val.v; }, 0);
+      var arows = top.map(function (d) { return { label: dzialName(d), values: [Z(contrib * d.val.v / tot, d.val.src, 'Twój wkład × udział działu w wydatkach (' + fmt(d.val.v / tot * 100, 1) + '%)')] }; });
+      arows.push({ label: 'Pozostałe działy (' + (dz.length - 10) + ')', values: [Z(contrib * restV / tot, B_.wydatki.ogolem.src, 'Twój wkład × udział pozostałych działów')] });
+      hbar(document.getElementById('calc-alloc'), { series: [{ name: yb, cls: yb === '2027' ? 3 : 2 }], unit: 'zł', dec: 0, rows: arows });
+
+      // Wybrane programy (tylko 2027 — dane w projekcie)
+      var pr = D.programy_spoleczne, w = L('2027').wydatki, ob = D.obszary;
+      var items = [
+        ['Obsługa długu (odsetki)', w.obsluga_dlugu_sp], ['Obronność z budżetu państwa', ob.obronnosc['2027'].budzet_panstwa],
+        ['Rodzina 800+', pr.rodzina_800_plus['2027']], ['Dotacja do ZUS (FUS)', w.dotacja_fus], ['Składka do budżetu UE', w.skladka_do_budzetu_ue],
+        ['13. i 14. emerytura', pr.emerytura_13_i_14['2027']], ['Ochrona zdrowia z budżetu państwa', ob.zdrowie['2027'].z_budzetu_panstwa]
+      ];
+      var t27 = L('2027').wydatki.ogolem.v;
+      table(document.getElementById('calc-items'), {
+        cols: [{ head: 'Pozycja (budżet 2027)' }, { head: 'Kwota', cls: 'n' }, { head: 'Z Twoich podatków rocznie', cls: 'n' }],
+        rows: items.map(function (it) { return [esc(it[0]), num(it[1]), zlNum(Z(contrib * it[1].v / t27, it[1].src, 'Twój wkład × udział pozycji w wydatkach 2027'), it[0])]; })
+      });
+    }
+
+    // Zdarzenia: każda zmiana formularza przelicza wynik
+    form.addEventListener('input', run);
+    form.addEventListener('change', function (e) {
+      if (e.target.name === 'tryb' || e.target.name === 'typ') {
+        var hint = document.getElementById('kwota-hint');
+        var t = form.querySelector('input[name=tryb]:checked').value, typ = form.querySelector('input[name=typ]:checked').value;
+        hint.textContent = typ === 'emeryt' ? 'Wpisz emeryturę ' + t + ' (miesięcznie).' : t === 'netto' ? 'Kwota „na rękę” z paska wypłaty.' : 'Kwota z umowy o pracę.';
+      }
+      run();
+    });
+    form.addEventListener('submit', function (e) { e.preventDefault(); });
+    // Edycja kategorii: pole „Bez VAT” domyka budżet do kwoty netto,
+    // dopóki użytkownik sam go nie zmieni.
+    var restTouched = false;
+    box.addEventListener('input', function (e) {
+      touched = true;
+      var rest = box.querySelector('input[data-exp=bezvat]');
+      if (e.target === rest) { restTouched = true; }
+      else if (!restTouched) {
+        var others = 0;
+        box.querySelectorAll('input[data-exp]').forEach(function (i) { if (i !== rest) others += Math.max(0, parseFloat(i.value) || 0); });
+        rest.value = Math.max(0, Math.round(lastNetto - others));
+      }
+      run();
+    });
+    document.getElementById('assumptions').addEventListener('input', run);
+    document.getElementById('fill-basket').addEventListener('click', function () { touched = false; restTouched = false; run(); });
+    run();
   };
 
   /* ===== ŹRÓDŁA ===== */
