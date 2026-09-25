@@ -195,6 +195,24 @@
       "data": "2026-08",
       "url": "https://www.rp.pl/budzet-i-podatki/art45070851-konsolidacja-ma-poczekac-trudne-decyzje-rzad-zostawia-nastepcom"
     },
+    "mf_kas_mlodzi": {
+      "tytul": "KAS przypomina: zasady rocznego rozliczenia PIT osób do 26. roku życia",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026",
+      "url": "https://www.gov.pl/web/finanse/kas-przypomina-zasady-rocznego-rozliczenia-pit-osob-do-26-roku-zycia"
+    },
+    "faktura_paliwa": {
+      "tytul": "Stacje paliw po końcu CPN. Benzyna 95 kosztuje średnio 7,63 zł, diesel 8,39 zł (dane e-petrol z 2.09.2026)",
+      "wydawca": "Portal Faktura.pl",
+      "data": "2026-09-04",
+      "url": "https://portal.faktura.pl/biznes/biznes-pod-lupa/stacje-paliw-po-koncu-cpn-benzyna-95-kosztuje-srednio-763-zl-diesel-839-zl/"
+    },
+    "superbiz_papierosy": {
+      "tytul": "Akcyza na papierosy i płyny do e-papierosów w górę. Paczka zdrożeje do 27 zł (prognozy MF)",
+      "wydawca": "Super Biznes",
+      "data": "2024-10",
+      "url": "https://superbiz.se.pl/wiadomosci/akcyza-na-papierosy-i-plyny-do-e-papierosow-w-gore-paczka-zdrozeje-do-27-zl-aa-QxdV-somj-AbFH.html"
+    },
     "kff_2025": {
       "tytul": "KFF Health Tracking Poll (luty 2025): The Public’s Views on Global Health and USAID",
       "wydawca": "KFF",
@@ -4010,6 +4028,13 @@
         "wypadkowa_typowa": 0.0167,
         "fp_i_fs": 0.0245,
         "fgsp": 0.001
+      },
+      "ulga_dla_mlodych_limit": {
+        "v": 85528,
+        "src": [
+          "mf_kas_mlodzi"
+        ],
+        "uwaga": "roczny limit przychodów zwolnionych z PIT dla osób do 26. roku życia (umowa o pracę, zlecenie); składki ZUS i zdrowotna płacone normalnie"
       }
     },
     "2027_projekt": {
@@ -4080,6 +4105,28 @@
         "weryfikuj": "Rozbieżne źródła: 0,55 zł/ml (płyn do napełniania) vs 0,96 zł/ml (+40 zł/szt. dla jednorazówek). Sprawdzić w ustawie o podatku akcyzowym (art. 99c) przed użyciem w kalkulatorze"
       },
       "uwaga": "Stawki standardowe; wiosną 2026 (CPN) akcyza na paliwa była czasowo obniżona do minimum UE (do 15.06.2026)"
+    },
+    "ceny_referencyjne": {
+      "benzyna_95_zl_l": {
+        "v": 7.63,
+        "src": [
+          "faktura_paliwa"
+        ],
+        "uwaga": "średnia krajowa e-petrol, 2.09.2026 (po zakończeniu programu CPN)"
+      },
+      "olej_napedowy_zl_l": {
+        "v": 8.39,
+        "src": [
+          "faktura_paliwa"
+        ]
+      },
+      "paczka_papierosow_zl": {
+        "v": 23.85,
+        "src": [
+          "superbiz_papierosy"
+        ],
+        "weryfikuj": "Prognoza MF (2024) średniej ceny paczki na 2026 r.; rzeczywista cena zależy od marki — w kalkulatorze można ją zmienić"
+      }
     },
     "oplata_paliwowa_2026": {
       "src": [
