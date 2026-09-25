@@ -1,0 +1,4375 @@
+{
+  "meta": {
+    "tytul": "Budżet Polski – dane do strony",
+    "wersja": 2,
+    "stan_na": "2026-09-25",
+    "jednostka": "mld zł (3 miejsca po przecinku = dokładność do 1 mln zł), chyba że pole mówi inaczej (_proc = %, _zl = złote, _mln = miliony)",
+    "format_wartosci": "{v: wartość, src: [id źródła z 'zrodla'], wyliczone?: wzór, weryfikuj?: wątpliwość, uwaga?: kontekst}",
+    "zasady": "Budżet państwa ≠ sektor finansów publicznych ≠ sektor GG (UE). Kwoty z różnych definicji nie są sumowane. Źródła pierwszorzędne (dokumenty MF) mają pierwszeństwo przed mediami.",
+    "klucze_lat": "2025 = wykonanie (+plan), 2026 = ustawa (+przewidywane wykonanie, +I–VIII), 2027 = projekt"
+  },
+  "zrodla": {
+    "mf_uzas_2027": {
+      "tytul": "Ustawa budżetowa na rok 2027 – Uzasadnienie (projekt, sierpień 2026)",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-08-28",
+      "url": "https://www.gov.pl/attachment/a599b231-04db-431f-b982-1b9bd34c099b"
+    },
+    "mf_projekt_2027": {
+      "tytul": "Projekt ustawy budżetowej na rok 2027 wraz z załącznikami (zał. 2: wydatki wg działów)",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-08-28",
+      "url": "https://www.gov.pl/attachment/ac650302-97b2-4454-9629-6d2f5bc681c7"
+    },
+    "mf_rds_2027": {
+      "tytul": "Projekt przekazany do RDS – dokumenty projektu budżetu 2027",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-08-28",
+      "url": "https://www.gov.pl/web/finanse/projekt-przekazany-do-rds27"
+    },
+    "mf_ub_2026": {
+      "tytul": "Ustawa budżetowa na rok 2026 z dnia 9 stycznia 2026 r. (Dz.U. 2026 poz. 62) – tekst i załączniki",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-01-23",
+      "url": "https://www.gov.pl/web/finanse/ustawa-2026"
+    },
+    "mf_spr_2025": {
+      "tytul": "Sprawozdanie z wykonania budżetu państwa za 2025 r., Tom I",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-05-31",
+      "url": "https://www.gov.pl/web/finanse/sprawozdanie-roczne-za-2025-rok"
+    },
+    "mf_wyk_2026_08": {
+      "tytul": "Szacunkowe wykonanie budżetu państwa w okresie styczeń–sierpień 2026 r.",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-09-15",
+      "url": "https://www.gov.pl/web/finanse/szacunkowe-wykonanie-budzetu-panstwa-w-okresie-styczen-sierpien-2026-r"
+    },
+    "mf_dlug_2025q4": {
+      "tytul": "Zadłużenie sektora finansów publicznych IV kw. 2025",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2026-03-31",
+      "url": "https://www.gov.pl/attachment/cd585192-94d1-4015-bb8f-0e2b4453fd98"
+    },
+    "mf_strategia_dlug": {
+      "tytul": "Strategia zarządzania długiem sektora finansów publicznych w latach 2026–2029",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2025-09-30",
+      "url": "https://www.gov.pl/web/finanse/strategia-zarzadzania-dlugiem-sektora-finansow-publicznych-w-latach-2026-2029"
+    },
+    "mf_akcyza_stawki": {
+      "tytul": "Akcyza – stawki podatkowe",
+      "wydawca": "Ministerstwo Finansów (podatki.gov.pl)",
+      "data": "2026",
+      "url": "https://www.podatki.gov.pl/akcyza/stawki-podatkowe"
+    },
+    "nik_2025": {
+      "tytul": "Analiza wykonania budżetu państwa i założeń polityki pieniężnej w 2025 roku",
+      "wydawca": "Najwyższa Izba Kontroli",
+      "data": "2026-07-30",
+      "url": "https://www.nik.gov.pl/aktualnosci/prezes-nik-przedstawil-sejmowi-wyniki-najwazniejszej-kontroli-roku.html"
+    },
+    "eurostat_2026_04": {
+      "tytul": "Euro area government deficit at 2.9% and EU at 3.1% of GDP (2025)",
+      "wydawca": "Eurostat",
+      "data": "2026-04-22",
+      "url": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-22042026-ap"
+    },
+    "eurostat_cofog": {
+      "tytul": "General government expenditure by function (COFOG), gov_10a_exp, 2024, % PKB",
+      "wydawca": "Eurostat",
+      "data": "2026-09-16",
+      "url": "https://ec.europa.eu/eurostat/databrowser/view/gov_10a_exp/default/table?lang=en"
+    },
+    "gus_ludnosc_2025": {
+      "tytul": "Liczba ludności Polski na koniec 2025 r. – 37,332 mln",
+      "wydawca": "GUS (za PAP Biznes)",
+      "data": "2026",
+      "url": "https://biznes.pap.pl/wiadomosci/gospodarka/liczba-ludnosci-polski-na-koniec-2025-spadla-o-157-tys-rdr-do-37332-mln-gus-0"
+    },
+    "gus_bgd_2025": {
+      "tytul": "Sytuacja gospodarstw domowych w 2025 r. w świetle badania budżetów gospodarstw domowych",
+      "wydawca": "GUS",
+      "data": "2026-05-27",
+      "url": "https://stat.gov.pl/files/gfx/portalinformacyjny/pl/defaultaktualnosci/5486/3/25/1/sytuacja_gospodarstw_domowych_2025.pdf"
+    },
+    "sejm_api": {
+      "tytul": "API Sejmu RP – kluby i koła X kadencji",
+      "wydawca": "Kancelaria Sejmu",
+      "data": "2026-09-25",
+      "url": "https://api.sejm.gov.pl/sejm/term10/clubs"
+    },
+    "konstytucja": {
+      "tytul": "Konstytucja RP, art. 216–226 (finanse publiczne)",
+      "wydawca": "Sejm RP",
+      "data": "1997",
+      "url": "https://www.sejm.gov.pl/prawo/konst/polski/7.htm"
+    },
+    "rf_2027": {
+      "tytul": "Rada Fiskalna ostrzega przed przekroczeniem progu 55 proc. PKB (opinia z 14.09.2026)",
+      "wydawca": "Super Biznes",
+      "data": "2026-09-14",
+      "url": "https://superbiz.se.pl/wiadomosci/dlug-publiczny-wymyka-sie-spod-kontroli-rada-fiskalna-alarmuje-rzad-aa-4BBS-wj6D-bkZ9.html"
+    },
+    "bankier_nik_2025": {
+      "tytul": "NIK: wysoki deficyt mimo dobrej koniunktury to ryzyko dla Polski",
+      "wydawca": "Bankier.pl",
+      "data": "2026",
+      "url": "https://www.bankier.pl/wiadomosc/NIK-wysoki-deficyt-mimo-dobrej-koniunktury-to-ryzyko-dla-Polski-9152295.html"
+    },
+    "rp_dlug_2025q4": {
+      "tytul": "Nowe dane Ministerstwa Finansów o zadłużeniu finansów publicznych",
+      "wydawca": "Rzeczpospolita",
+      "data": "2026-03",
+      "url": "https://www.rp.pl/budzet-i-podatki/art44077521-nowe-dane-ministerstwa-finansow-o-zadluzeniu-finansow-publicznych"
+    },
+    "d24_2026": {
+      "tytul": "Ile MON wyda na obronność w 2026 roku",
+      "wydawca": "Defence24",
+      "data": "2025",
+      "url": "https://defence24.pl/sily-zbrojne/127-mld-zl-z-budzetu-na-obronnosc-w-2026-roku-news-defence24"
+    },
+    "mf_ustawa_2026_kom": {
+      "tytul": "Sejm przyjął ustawę budżetową na 2026 rok",
+      "wydawca": "Ministerstwo Finansów",
+      "data": "2025-12-05",
+      "url": "https://www.gov.pl/web/finanse/sejm-przyjal-ustawe-budzetowa-na-2026-rok"
+    },
+    "prawo_podpis_2026": {
+      "tytul": "Prezydent podpisał budżet na 2026 rok",
+      "wydawca": "Prawo.pl",
+      "data": "2026-01",
+      "url": "https://www.prawo.pl/podatki/prezydent-podpisal-budzet-na-2026-rok,536834.html"
+    },
+    "rz_nfz_2027": {
+      "tytul": "Znamy budżet NFZ na 2027 rok. Zabraknie 20 mld zł",
+      "wydawca": "Rynek Zdrowia",
+      "data": "2026-06",
+      "url": "https://www.rynekzdrowia.pl/Finanse-i-zarzadzanie/Znamy-budzet-NFZ-na-2027-rok-Zabraknie-20-mld-zl-Projekt-2-lipca-w-Sejmie,286149,1.html"
+    },
+    "place_2026": {
+      "tytul": "Lista płac 2026 – wskaźniki, stawki, limity, składki ZUS",
+      "wydawca": "Eduwersum (M. Smulewicz)",
+      "data": "2026",
+      "url": "https://akademia.monikasmulewicz.pl/sciagawki/lista-plac-2026-wskazniki-stawki-limity-skladki-zus-placa-minimalna-pobierz-pdf/"
+    },
+    "infor_min_2027": {
+      "tytul": "Najniższa krajowa w 2027 r. – 4950 zł brutto",
+      "wydawca": "Infor.pl",
+      "data": "2026-09",
+      "url": "https://www.infor.pl/prawo/nowosci-prawne/7602693,najnizsza-krajowa-w-2027-r-4950-zl-brutto-i-3230-zl-minimalnej-stawki-godzinowej-rzad-ma-juz-gotowe-zalozenia-projektu-rozporzadzenia.html"
+    },
+    "fraikin_oplata": {
+      "tytul": "Opłata paliwowa 2026 – stawki",
+      "wydawca": "Fraikin",
+      "data": "2026",
+      "url": "https://www.fraikin.pl/pl/road-it/oplata-paliwowa-2026-i-koszty-paliwa-floty-stawki-i-przelicznik"
+    },
+    "infor_cpn": {
+      "tytul": "Rząd przedłuża obniżki na paliwa do 15 czerwca (program CPN)",
+      "wydawca": "Infor.pl",
+      "data": "2026",
+      "url": "https://www.infor.pl/twoje-pieniadze/koszty-utrzymania/7593981,rzad-przedluza-obnizki-paliwa-vat-akcyza-czerwiec-2026-cpn-ceny-paliwa-nizej-benzyna-diesel-ceny-na-stacjach-paliw-kryzys-iran-ormuz-orlen-promocja-gov-pl.html"
+    },
+    "cenypaliw_cpn": {
+      "tytul": "CPN 2026: VAT 8% w sierpniu, powrót 23% od 1 września",
+      "wydawca": "cenypaliw.fyi",
+      "data": "2026-08",
+      "url": "https://cenypaliw.fyi/blog/2026-08-powrot-cpn"
+    },
+    "duda_eliquid": {
+      "tytul": "Akcyza na e-papierosy 2026 – stawki",
+      "wydawca": "Kancelaria adw. S. Duda",
+      "data": "2026",
+      "url": "https://adwokatslawomirduda.pl/akcyza-na-e-papierosy-2026-jakie-sa-stawki-i-jak-uniknac-bledow"
+    },
+    "lex_2027": {
+      "tytul": "MF: Projekt budżetu na 2027 r. koncentruje się na bezpieczeństwie, zdrowiu i inwestycjach",
+      "wydawca": "LEX / Wolters Kluwer",
+      "data": "2026-08",
+      "url": "https://lex.media.pl/mf-projekt-budzetu-na-2027-r-koncentruje-sie-na-bezpieczenstwie-zdrowiu-i-inwestycjach-42080430.html"
+    },
+    "rp_gg_2027": {
+      "tytul": "Budżet 2027: Deficyt finansów publicznych ma wynieść 7,1 proc. PKB",
+      "wydawca": "Rzeczpospolita",
+      "data": "2026-08",
+      "url": "https://www.rp.pl/budzet-i-podatki/art45070851-konsolidacja-ma-poczekac-trudne-decyzje-rzad-zostawia-nastepcom"
+    },
+    "kff_2025": {
+      "tytul": "KFF Health Tracking Poll (luty 2025): The Public’s Views on Global Health and USAID",
+      "wydawca": "KFF",
+      "data": "2025-02",
+      "url": "https://www.kff.org/global-health-policy/kff-health-tracking-poll-february-2025-the-publics-views-on-global-health-and-usaid/"
+    }
+  },
+  "makro": {
+    "opis": "Wieloletnie założenia makroekonomiczne 2026–2030 (Tablica 1 uzasadnienia projektu 2027)",
+    "pkb_nominalne_mld": {
+      "2025": {
+        "v": 3912.7,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2026": {
+        "v": 4154.8,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2027": {
+        "v": 4400.3,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2028": {
+        "v": 4629.7,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2029": {
+        "v": 4853.7,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2030": {
+        "v": 5074.5,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "pkb_realny_wzrost_proc": {
+      "2025": {
+        "v": 3.6,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2026": {
+        "v": 3.6,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2027": {
+        "v": 3.0,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "inflacja_cpi_proc": {
+      "2025": {
+        "v": 3.6,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2026": {
+        "v": 3.0,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2027": {
+        "v": 2.8,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "przecietne_wynagrodzenie_brutto_zl": {
+      "2025": {
+        "v": 8904,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2026": {
+        "v": 9473,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2027": {
+        "v": 10033,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "stopa_bezrobocia_koniec_roku_proc": {
+      "2025": {
+        "v": 5.7,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2026": {
+        "v": 6.0,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2027": {
+        "v": 6.0,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "eur_pln_srednio": {
+      "2025": {
+        "v": 4.24,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2026": {
+        "v": 4.28,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "2027": {
+        "v": 4.33,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "uwaga": "Eurostat liczy relacje do PKB z własnych danych – mogą różnić się o 0,1–0,3 pkt proc. od relacji MF."
+  },
+  "lata": {
+    "2025": {
+      "status": "wykonanie",
+      "opis": "Wykonanie budżetu państwa w 2025 r. wg Sprawozdania MF (31.05.2026); plan = ustawa budżetowa na 2025 r.",
+      "dochody": {
+        "ogolem": {
+          "v": 594.524,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "podatkowe": {
+          "v": 529.225,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "podatki": [
+          {
+            "klucz": "vat",
+            "nazwa": "VAT",
+            "v": 321.646,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "akcyza",
+            "nazwa": "Akcyza",
+            "v": 92.519,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "gry",
+            "nazwa": "Podatek od gier",
+            "v": 6.193,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "cit",
+            "nazwa": "CIT",
+            "v": 63.687,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "pit",
+            "nazwa": "PIT",
+            "v": 28.752,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "kopaliny",
+            "nazwa": "Podatek od wydobycia kopalin",
+            "v": 4.751,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "bankowy",
+            "nazwa": "Podatek od instytucji finansowych (bankowy)",
+            "v": 7.041,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "detaliczny",
+            "nazwa": "Podatek od sprzedaży detalicznej",
+            "v": 4.636,
+            "src": [
+              "mf_spr_2025"
+            ]
+          }
+        ],
+        "niepodatkowe": {
+          "v": 62.081,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "niepodatkowe_szczegoly": [
+          {
+            "klucz": "dywidendy",
+            "nazwa": "Dywidendy i wpłaty z zysku",
+            "v": 6.385,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "clo",
+            "nazwa": "Cło",
+            "v": 7.735,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          {
+            "klucz": "jednostki",
+            "nazwa": "Dochody jednostek budżetowych i inne (m.in. aukcje CO2)",
+            "v": 47.96,
+            "src": [
+              "mf_spr_2025"
+            ]
+          }
+        ],
+        "srodki_ue": {
+          "v": 3.219,
+          "src": [
+            "mf_spr_2025"
+          ],
+          "uwaga": "tylko środki UE w budżecie państwa (pomoc techniczna itp.); główny strumień funduszy UE idzie przez budżet środków europejskich"
+        }
+      },
+      "wydatki": {
+        "ogolem": {
+          "v": 870.191,
+          "src": [
+            "mf_spr_2025"
+          ],
+          "uwaga": "w tym 47 mln zł wydatków niewygasających"
+        },
+        "dzialy": [
+          {
+            "kod": "010",
+            "nazwa": "Rolnictwo i łowiectwo",
+            "plan": {
+              "v": 11.092,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 17.822,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "020",
+            "nazwa": "Leśnictwo",
+            "plan": {
+              "v": 0.008,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.01,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "050",
+            "nazwa": "Rybołówstwo i rybactwo",
+            "plan": {
+              "v": 0.142,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.245,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "100",
+            "nazwa": "Górnictwo i kopalnictwo",
+            "plan": {
+              "v": 3.67,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 3.289,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "150",
+            "nazwa": "Przetwórstwo przemysłowe",
+            "plan": {
+              "v": 2.071,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 2.901,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "400",
+            "nazwa": "Wytwarzanie i zaopatrywanie w energię elektryczną, gaz i",
+            "plan": {
+              "v": 0.0,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.007,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "500",
+            "nazwa": "Handel",
+            "plan": {
+              "v": 1.537,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.983,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "550",
+            "nazwa": "Hotele i restauracje",
+            "plan": {
+              "v": 0.061,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.074,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "600",
+            "nazwa": "Transport i łączność",
+            "plan": {
+              "v": 24.787,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 28.16,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "630",
+            "nazwa": "Turystyka",
+            "plan": {
+              "v": 0.118,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.121,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "700",
+            "nazwa": "Gospodarka mieszkaniowa",
+            "plan": {
+              "v": 2.958,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 5.186,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "710",
+            "nazwa": "Działalność usługowa",
+            "plan": {
+              "v": 0.983,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.963,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "720",
+            "nazwa": "Informatyka",
+            "plan": {
+              "v": 0.287,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.283,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "730",
+            "nazwa": "Szkolnictwo wyższe i nauka",
+            "plan": {
+              "v": 39.847,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 39.698,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "750",
+            "nazwa": "Administracja publiczna",
+            "plan": {
+              "v": 30.033,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 52.874,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "751",
+            "nazwa": "Urzędy naczelnych organów władzy państwowej, kontroli i",
+            "plan": {
+              "v": 4.421,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 4.639,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "752",
+            "nazwa": "Obrona narodowa",
+            "plan": {
+              "v": 109.583,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 108.911,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "753",
+            "nazwa": "Obowiązkowe ubezpieczenia społeczne",
+            "plan": {
+              "v": 184.064,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 162.821,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "754",
+            "nazwa": "Bezpieczeństwo publiczne i ochrona przeciwpożarowa",
+            "plan": {
+              "v": 31.435,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 33.798,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "755",
+            "nazwa": "Wymiar sprawiedliwości",
+            "plan": {
+              "v": 27.413,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 27.143,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "756",
+            "nazwa": "Dochody od osób prawnych, od osób fizycznych i od innych",
+            "plan": {
+              "v": 0.0,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.005,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "757",
+            "nazwa": "Obsługa długu publicznego",
+            "plan": {
+              "v": 110.162,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 107.491,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "758",
+            "nazwa": "Różne rozliczenia",
+            "plan": {
+              "v": 173.164,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 88.821,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "801",
+            "nazwa": "Oświata i wychowanie",
+            "plan": {
+              "v": 4.351,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 5.142,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "851",
+            "nazwa": "Ochrona zdrowia",
+            "plan": {
+              "v": 40.503,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 48.561,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "852",
+            "nazwa": "Pomoc społeczna",
+            "plan": {
+              "v": 5.972,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 8.394,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "853",
+            "nazwa": "Pozostałe zadania w zakresie polityki społecznej",
+            "plan": {
+              "v": 5.37,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 4.973,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "854",
+            "nazwa": "Edukacyjna opieka wychowawcza",
+            "plan": {
+              "v": 0.299,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.457,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "855",
+            "nazwa": "Rodzina",
+            "plan": {
+              "v": 97.192,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 103.128,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "900",
+            "nazwa": "Gospodarka komunalna i ochrona środowiska",
+            "plan": {
+              "v": 2.587,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 4.057,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "921",
+            "nazwa": "Kultura i ochrona dziedzictwa narodowego",
+            "plan": {
+              "v": 5.671,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 7.425,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "925",
+            "nazwa": "Ogrody botaniczne i zoologiczne oraz naturalne obszary i",
+            "plan": {
+              "v": 0.231,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 0.214,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          },
+          {
+            "kod": "926",
+            "nazwa": "Kultura fizyczna",
+            "plan": {
+              "v": 1.605,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            "wykonanie": {
+              "v": 1.547,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          }
+        ],
+        "uwaga_dzialy": "Dział 758 „Różne rozliczenia” zawiera m.in. subwencje dla samorządów, składkę do budżetu UE i rezerwy celowe – w trakcie roku rezerwy są rozdzielane do innych działów, dlatego wykonanie działów różni się od planu (np. 2025: dział 758 plan 173,2 → wykonanie 88,8 mld zł). Dział 757 w 2025 r. obejmuje, poza obsługą długu Skarbu Państwa (72,8 mld zł), dotacje na obsługę zadłużenia funduszy BGK.",
+        "obsluga_dlugu_sp": {
+          "v": 72.828,
+          "src": [
+            "mf_spr_2025"
+          ]
+        }
+      },
+      "deficyt": {
+        "v": 275.666,
+        "src": [
+          "mf_spr_2025"
+        ]
+      },
+      "plan": {
+        "dochody": {
+          "ogolem": {
+            "v": 632.848,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          "podatkowe": {
+            "v": 570.772,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          "podatki": [
+            {
+              "klucz": "vat",
+              "nazwa": "VAT",
+              "v": 349.526,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "akcyza",
+              "nazwa": "Akcyza",
+              "v": 98.136,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "gry",
+              "nazwa": "Podatek od gier",
+              "v": 5.3,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "cit",
+              "nazwa": "CIT",
+              "v": 70.719,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "pit",
+              "nazwa": "PIT",
+              "v": 31.736,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "kopaliny",
+              "nazwa": "Podatek od wydobycia kopalin",
+              "v": 3.5,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "bankowy",
+              "nazwa": "Podatek od instytucji finansowych (bankowy)",
+              "v": 6.91,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "detaliczny",
+              "nazwa": "Podatek od sprzedaży detalicznej",
+              "v": 4.946,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          ],
+          "niepodatkowe": {
+            "v": 57.941,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          "niepodatkowe_szczegoly": [
+            {
+              "klucz": "dywidendy",
+              "nazwa": "Dywidendy i wpłaty z zysku",
+              "v": 4.791,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "clo",
+              "nazwa": "Cło",
+              "v": 7.541,
+              "src": [
+                "mf_spr_2025"
+              ]
+            },
+            {
+              "klucz": "jednostki",
+              "nazwa": "Dochody jednostek budżetowych i inne (m.in. aukcje CO2)",
+              "v": 45.608,
+              "src": [
+                "mf_spr_2025"
+              ]
+            }
+          ],
+          "srodki_ue": {
+            "v": 4.135,
+            "src": [
+              "mf_spr_2025"
+            ],
+            "uwaga": "tylko środki UE w budżecie państwa (pomoc techniczna itp.); główny strumień funduszy UE idzie przez budżet środków europejskich"
+          }
+        },
+        "wydatki": {
+          "v": 921.618,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "deficyt": {
+          "v": 288.77,
+          "src": [
+            "mf_spr_2025"
+          ]
+        }
+      },
+      "budzet_srodkow_europejskich": {
+        "dochody": {
+          "v": 76.079,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "wydatki": {
+          "v": 89.507,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "wynik": {
+          "v": -13.428,
+          "src": [
+            "mf_spr_2025"
+          ]
+        },
+        "plan": {
+          "dochody": {
+            "v": 109.89,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          "wydatki": {
+            "v": 137.875,
+            "src": [
+              "mf_spr_2025"
+            ]
+          },
+          "wynik": {
+            "v": -27.985,
+            "src": [
+              "mf_spr_2025"
+            ]
+          }
+        }
+      },
+      "sektor_gg": {
+        "deficyt_mld": {
+          "v": 284.0,
+          "src": [
+            "bankier_nik_2025"
+          ]
+        },
+        "deficyt_pkb_proc": {
+          "v": 7.3,
+          "src": [
+            "eurostat_2026_04"
+          ]
+        }
+      }
+    },
+    "2026": {
+      "status": "ustawa",
+      "opis": "Ustawa budżetowa na rok 2026 z 9.01.2026 (Dz.U. poz. 62); przewidywane wykonanie wg uzasadnienia projektu 2027; wykonanie I–VIII wg MF",
+      "dochody": {
+        "ogolem": {
+          "v": 647.2,
+          "src": [
+            "mf_ub_2026"
+          ]
+        },
+        "podatkowe": {
+          "v": 579.923,
+          "src": [
+            "mf_ub_2026"
+          ]
+        },
+        "podatki": [
+          {
+            "klucz": "vat",
+            "nazwa": "VAT",
+            "v": 341.5,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "akcyza",
+            "nazwa": "Akcyza",
+            "v": 103.253,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "gry",
+            "nazwa": "Podatek od gier",
+            "v": 6.5,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "cit",
+            "nazwa": "CIT",
+            "v": 80.423,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "pit",
+            "nazwa": "PIT",
+            "v": 32.037,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "kopaliny",
+            "nazwa": "Podatek od wydobycia kopalin",
+            "v": 3.2,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "bankowy",
+            "nazwa": "Podatek od instytucji finansowych (bankowy)",
+            "v": 7.59,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "detaliczny",
+            "nazwa": "Podatek od sprzedaży detalicznej",
+            "v": 4.958,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "wyrownawcze",
+            "nazwa": "Podatki wyrównawcze",
+            "v": 0.462,
+            "src": [
+              "mf_ub_2026"
+            ]
+          }
+        ],
+        "niepodatkowe": {
+          "v": 63.643,
+          "src": [
+            "mf_ub_2026"
+          ]
+        },
+        "niepodatkowe_szczegoly": [
+          {
+            "klucz": "dywidendy",
+            "nazwa": "Dywidendy i wpłaty z zysku",
+            "v": 9.297,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "clo",
+            "nazwa": "Cło",
+            "v": 8.733,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "klucz": "jednostki",
+            "nazwa": "Dochody jednostek budżetowych i inne (m.in. aukcje CO2)",
+            "v": 45.613,
+            "src": [
+              "mf_ub_2026"
+            ]
+          }
+        ],
+        "srodki_ue": {
+          "v": 3.634,
+          "src": [
+            "mf_ub_2026"
+          ],
+          "uwaga": "tylko środki UE w budżecie państwa (pomoc techniczna itp.); główny strumień funduszy UE idzie przez budżet środków europejskich"
+        }
+      },
+      "wydatki": {
+        "ogolem": {
+          "v": 918.94,
+          "src": [
+            "mf_ub_2026"
+          ]
+        },
+        "dzialy": [
+          {
+            "kod": "010",
+            "nazwa": "Rolnictwo i łowiectwo",
+            "v": 9.575,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "020",
+            "nazwa": "Leśnictwo",
+            "v": 0.008,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "050",
+            "nazwa": "Rybołówstwo i rybactwo",
+            "v": 0.243,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "100",
+            "nazwa": "Górnictwo i kopalnictwo",
+            "v": 5.634,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "150",
+            "nazwa": "Przetwórstwo przemysłowe",
+            "v": 2.224,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "500",
+            "nazwa": "Handel",
+            "v": 1.324,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "550",
+            "nazwa": "Hotele i restauracje",
+            "v": 0.071,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "600",
+            "nazwa": "Transport i łączność",
+            "v": 21.821,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "630",
+            "nazwa": "Turystyka",
+            "v": 0.132,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "700",
+            "nazwa": "Gospodarka mieszkaniowa",
+            "v": 7.034,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "710",
+            "nazwa": "Działalność usługowa",
+            "v": 1.03,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "720",
+            "nazwa": "Informatyka",
+            "v": 0.298,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "730",
+            "nazwa": "Szkolnictwo wyższe i nauka",
+            "v": 41.241,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "750",
+            "nazwa": "Administracja publiczna",
+            "v": 30.208,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "751",
+            "nazwa": "Urzędy naczelnych organów władzy państwowej, kontroli i ochrony prawa oraz sądownictwa",
+            "v": 4.69,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "752",
+            "nazwa": "Obrona narodowa",
+            "v": 109.231,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "753",
+            "nazwa": "Obowiązkowe ubezpieczenia społeczne",
+            "v": 195.971,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "754",
+            "nazwa": "Bezpieczeństwo publiczne i ochrona przeciwpożarowa",
+            "v": 31.139,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "755",
+            "nazwa": "Wymiar sprawiedliwości",
+            "v": 28.682,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "757",
+            "nazwa": "Obsługa długu publicznego",
+            "v": 90.388,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "758",
+            "nazwa": "Różne rozliczenia",
+            "v": 162.528,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "801",
+            "nazwa": "Oświata i wychowanie",
+            "v": 4.7,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "851",
+            "nazwa": "Ochrona zdrowia",
+            "v": 54.243,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "852",
+            "nazwa": "Pomoc społeczna",
+            "v": 6.912,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "853",
+            "nazwa": "Pozostałe zadania w zakresie polityki społecznej",
+            "v": 2.213,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "854",
+            "nazwa": "Edukacyjna opieka wychowawcza",
+            "v": 0.291,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "855",
+            "nazwa": "Rodzina",
+            "v": 97.922,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "900",
+            "nazwa": "Gospodarka komunalna i ochrona środowiska",
+            "v": 2.692,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "921",
+            "nazwa": "Kultura i ochrona dziedzictwa narodowego",
+            "v": 5.488,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "925",
+            "nazwa": "Ogrody botaniczne i zoologiczne oraz naturalne obszary i obiekty chronionej przyrody",
+            "v": 0.233,
+            "src": [
+              "mf_ub_2026"
+            ]
+          },
+          {
+            "kod": "926",
+            "nazwa": "Kultura fizyczna",
+            "v": 0.773,
+            "src": [
+              "mf_ub_2026"
+            ]
+          }
+        ],
+        "uwaga_dzialy": "Dział 758 „Różne rozliczenia” zawiera m.in. subwencje dla samorządów, składkę do budżetu UE i rezerwy celowe – w trakcie roku rezerwy są rozdzielane do innych działów, dlatego wykonanie działów różni się od planu (np. 2025: dział 758 plan 173,2 → wykonanie 88,8 mld zł). Dział 757 w 2025 r. obejmuje, poza obsługą długu Skarbu Państwa (72,8 mld zł), dotacje na obsługę zadłużenia funduszy BGK.",
+        "obsluga_dlugu_sp": {
+          "v": 90.0,
+          "src": [
+            "mf_ub_2026",
+            "mf_uzas_2027"
+          ]
+        },
+        "skladka_do_budzetu_ue": {
+          "v": 41.585,
+          "src": [
+            "mf_ub_2026"
+          ]
+        }
+      },
+      "deficyt": {
+        "v": 271.74,
+        "src": [
+          "mf_ub_2026"
+        ],
+        "uwaga": "limit maksymalny"
+      },
+      "budzet_srodkow_europejskich": {
+        "dochody": {
+          "v": 137.907,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "wydatki": {
+          "v": 174.112,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "wynik": {
+          "v": -36.205,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "przewidywane_wykonanie": {
+        "opis": "Prognoza MF z sierpnia 2026 (uzasadnienie projektu 2027): dochody niższe od ustawy o ok. 20,6 mld zł (VAT −9,5; akcyza −8,8; PIT −1,8; niepodatkowe −5,3), deficyt nie przekroczy 271,7 mld zł",
+        "dochody": {
+          "ogolem": {
+            "v": 626.621,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "podatkowe": {
+            "v": 564.638,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "podatki": [
+            {
+              "klucz": "vat",
+              "nazwa": "VAT",
+              "v": 332.0,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "akcyza",
+              "nazwa": "Akcyza",
+              "v": 94.5,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "gry",
+              "nazwa": "Podatek od gier",
+              "v": 6.5,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "cit",
+              "nazwa": "CIT",
+              "v": 80.423,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "pit",
+              "nazwa": "PIT",
+              "v": 30.246,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "kopaliny",
+              "nazwa": "Podatek od wydobycia kopalin",
+              "v": 8.0,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "bankowy",
+              "nazwa": "Podatek od instytucji finansowych (bankowy)",
+              "v": 7.6,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "detaliczny",
+              "nazwa": "Podatek od sprzedaży detalicznej",
+              "v": 4.907,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "wyrownawcze",
+              "nazwa": "Podatki wyrównawcze",
+              "v": 0.462,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            }
+          ],
+          "niepodatkowe": {
+            "v": 58.348,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "niepodatkowe_szczegoly": [
+            {
+              "klucz": "dywidendy",
+              "nazwa": "Dywidendy i wpłaty z zysku",
+              "v": 9.085,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "clo",
+              "nazwa": "Cło",
+              "v": 8.783,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            },
+            {
+              "klucz": "jednostki",
+              "nazwa": "Dochody jednostek budżetowych i inne (m.in. aukcje CO2)",
+              "v": 40.48,
+              "src": [
+                "mf_uzas_2027"
+              ]
+            }
+          ]
+        },
+        "deficyt": {
+          "v": 271.74,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "MF: nie przekroczy limitu; wydatki mają być „istotnie niższe” od ustawy"
+        },
+        "potrzeby_pozyczkowe_netto": {
+          "v": 320.636,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "w ustawie: 422,9 mld zł"
+        },
+        "przyczyny_odchylen": [
+          {
+            "opis": "Program CPN (Ceny Paliw Niżej) – obniżka VAT (23→8%) i akcyzy na paliwa wiosną 2026 (akcyza do 15.06, VAT do 30.06) oraz sam VAT 8% w dniach 17–31.08.2026",
+            "src": [
+              "mf_uzas_2027",
+              "infor_cpn",
+              "cenypaliw_cpn"
+            ]
+          },
+          {
+            "opis": "Krótszy termin zwrotu VAT (z 60 do 40 dni od 1.02.2026) i zwolnienie z VAT zakupów w ramach SAFE",
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "opis": "Zawetowanie podwyżki akcyzy na alkohol o 15% na 2026 r.; malejące spożycie wyrobów akcyzowych",
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "opis": "Niższe wpływy z aukcji CO2 i dywidend; brak wpłaty z zysku NBP",
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "opis": "Zablokowanie przez Prezydenta RP ustaw zwiększających dochody (stanowisko MF)",
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        ]
+      },
+      "wykonanie_I_VIII": {
+        "stan_na": "2026-08-31",
+        "dochody": {
+          "v": 387.2,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "59,8% planu"
+        },
+        "wydatki": {
+          "v": 538.3,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "58,6% planu; +0,6% r/r"
+        },
+        "deficyt": {
+          "v": 151.1,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "55,6% limitu; rok wcześniej po VIII: 172 mld zł"
+        },
+        "podatkowe": {
+          "v": 343.1,
+          "src": [
+            "mf_wyk_2026_08"
+          ]
+        },
+        "vat": {
+          "v": 218.8,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "+2,0% r/r"
+        },
+        "akcyza": {
+          "v": 60.5,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "+2,4% r/r"
+        },
+        "cit": {
+          "v": 57.3,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "+29,9% r/r"
+        },
+        "pit_budzet_panstwa": {
+          "v": -11.6,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "Ujemne, bo udziały samorządów w PIT (149 mld zł) przewyższyły wpływy do budżetu; łączne wpływy PIT (budżet + JST) 137,4 mld zł, +12,1% r/r"
+        },
+        "niepodatkowe": {
+          "v": 42.8,
+          "src": [
+            "mf_wyk_2026_08"
+          ],
+          "uwaga": "+5,2% r/r"
+        },
+        "wydatki_czesci": [
+          {
+            "nazwa": "Ubezpieczenia społeczne (ZUS)",
+            "v": 123.4,
+            "src": [
+              "mf_wyk_2026_08"
+            ],
+            "uwaga": "59,4% planu"
+          },
+          {
+            "nazwa": "Obrona narodowa",
+            "v": 61.9,
+            "src": [
+              "mf_wyk_2026_08"
+            ],
+            "uwaga": "52,0% planu"
+          },
+          {
+            "nazwa": "Obsługa długu",
+            "v": 49.4,
+            "src": [
+              "mf_wyk_2026_08"
+            ],
+            "uwaga": "54,9% planu"
+          },
+          {
+            "nazwa": "Subwencje dla samorządów",
+            "v": 39.2,
+            "src": [
+              "mf_wyk_2026_08"
+            ],
+            "uwaga": "72,4% planu"
+          },
+          {
+            "nazwa": "Budżety wojewodów",
+            "v": 38.0,
+            "src": [
+              "mf_wyk_2026_08"
+            ],
+            "uwaga": "67,9% planu"
+          }
+        ]
+      },
+      "sektor_gg": {
+        "deficyt_pkb_proc": {
+          "v": 7.1,
+          "src": [
+            "rp_gg_2027"
+          ],
+          "weryfikuj": "Wartość z mediów (rp.pl); uzasadnienie 2027 podaje wprost tylko 7,1% dla 2027"
+        }
+      }
+    },
+    "2027": {
+      "status": "projekt",
+      "opis": "Projekt ustawy budżetowej na rok 2027 przyjęty przez Radę Ministrów 28.08.2026 i przekazany Radzie Dialogu Społecznego; do Sejmu trafia do 30.09.2026",
+      "dochody": {
+        "ogolem": {
+          "v": 695.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "podatkowe": {
+          "v": 622.437,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "podatki": [
+          {
+            "klucz": "vat",
+            "nazwa": "VAT",
+            "v": 363.7,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "akcyza",
+            "nazwa": "Akcyza",
+            "v": 100.1,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "gry",
+            "nazwa": "Podatek od gier",
+            "v": 7.3,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "cit",
+            "nazwa": "CIT",
+            "v": 94.641,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "pit",
+            "nazwa": "PIT",
+            "v": 33.389,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "kopaliny",
+            "nazwa": "Podatek od wydobycia kopalin",
+            "v": 6.6,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "bankowy",
+            "nazwa": "Podatek od instytucji finansowych (bankowy)",
+            "v": 7.39,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "detaliczny",
+            "nazwa": "Podatek od sprzedaży detalicznej",
+            "v": 5.185,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "wyrownawcze",
+            "nazwa": "Podatki wyrównawcze",
+            "v": 2.415,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "rekompensacyjny",
+            "nazwa": "Podatek rekompensacyjny",
+            "v": 1.716,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        ],
+        "niepodatkowe": {
+          "v": 69.295,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "niepodatkowe_szczegoly": [
+          {
+            "klucz": "dywidendy",
+            "nazwa": "Dywidendy i wpłaty z zysku",
+            "v": 13.9,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "clo",
+            "nazwa": "Cło",
+            "v": 9.425,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "klucz": "jednostki",
+            "nazwa": "Dochody jednostek budżetowych i inne (m.in. aukcje CO2)",
+            "v": 45.97,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        ],
+        "srodki_ue": {
+          "v": 3.268,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "tylko środki UE w budżecie państwa (pomoc techniczna itp.); główny strumień funduszy UE idzie przez budżet środków europejskich"
+        }
+      },
+      "wydatki": {
+        "ogolem": {
+          "v": 977.6,
+          "src": [
+            "mf_projekt_2027"
+          ],
+          "uwaga": "22,2% PKB; +58,7 mld zł (+6,4%) wobec ustawy 2026"
+        },
+        "dzialy": [
+          {
+            "kod": "010",
+            "nazwa": "Rolnictwo i łowiectwo",
+            "v": 10.179,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "020",
+            "nazwa": "Leśnictwo",
+            "v": 0.005,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "050",
+            "nazwa": "Rybołówstwo i rybactwo",
+            "v": 0.245,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "100",
+            "nazwa": "Górnictwo i kopalnictwo",
+            "v": 6.136,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "150",
+            "nazwa": "Przetwórstwo przemysłowe",
+            "v": 2.0,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "500",
+            "nazwa": "Handel",
+            "v": 1.329,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "550",
+            "nazwa": "Hotele i restauracje",
+            "v": 0.095,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "600",
+            "nazwa": "Transport i łączność",
+            "v": 28.397,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "630",
+            "nazwa": "Turystyka",
+            "v": 0.118,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "700",
+            "nazwa": "Gospodarka mieszkaniowa",
+            "v": 6.098,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "710",
+            "nazwa": "Działalność usługowa",
+            "v": 1.135,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "720",
+            "nazwa": "Informatyka",
+            "v": 0.352,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "730",
+            "nazwa": "Szkolnictwo wyższe i nauka",
+            "v": 43.268,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "750",
+            "nazwa": "Administracja publiczna",
+            "v": 31.563,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "751",
+            "nazwa": "Urzędy naczelnych organów władzy państwowej, kontroli i ochrony prawa oraz sądownictwa",
+            "v": 5.414,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "752",
+            "nazwa": "Obrona narodowa",
+            "v": 115.695,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "753",
+            "nazwa": "Obowiązkowe ubezpieczenia społeczne",
+            "v": 201.391,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "754",
+            "nazwa": "Bezpieczeństwo publiczne i ochrona przeciwpożarowa",
+            "v": 36.512,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "755",
+            "nazwa": "Wymiar sprawiedliwości",
+            "v": 30.532,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "757",
+            "nazwa": "Obsługa długu publicznego",
+            "v": 107.0,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "758",
+            "nazwa": "Różne rozliczenia",
+            "v": 150.866,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "801",
+            "nazwa": "Oświata i wychowanie",
+            "v": 5.411,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "851",
+            "nazwa": "Ochrona zdrowia",
+            "v": 68.907,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "852",
+            "nazwa": "Pomoc społeczna",
+            "v": 6.914,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "853",
+            "nazwa": "Pozostałe zadania w zakresie polityki społecznej",
+            "v": 1.925,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "854",
+            "nazwa": "Edukacyjna opieka wychowawcza",
+            "v": 0.303,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "855",
+            "nazwa": "Rodzina",
+            "v": 106.583,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "900",
+            "nazwa": "Gospodarka komunalna i ochrona środowiska",
+            "v": 2.483,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "921",
+            "nazwa": "Kultura i ochrona dziedzictwa narodowego",
+            "v": 5.683,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "925",
+            "nazwa": "Ogrody botaniczne i zoologiczne oraz naturalne obszary i obiekty chronionej przyrody",
+            "v": 0.233,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          },
+          {
+            "kod": "926",
+            "nazwa": "Kultura fizyczna",
+            "v": 0.829,
+            "src": [
+              "mf_projekt_2027"
+            ]
+          }
+        ],
+        "uwaga_dzialy": "Dział 758 „Różne rozliczenia” zawiera m.in. subwencje dla samorządów, składkę do budżetu UE i rezerwy celowe – w trakcie roku rezerwy są rozdzielane do innych działów, dlatego wykonanie działów różni się od planu (np. 2025: dział 758 plan 173,2 → wykonanie 88,8 mld zł). Dział 757 w 2025 r. obejmuje, poza obsługą długu Skarbu Państwa (72,8 mld zł), dotacje na obsługę zadłużenia funduszy BGK.",
+        "obsluga_dlugu_sp": {
+          "v": 107.0,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "+18,9% wobec ustawy 2026 (90,0 mld zł); rynek krajowy 89,9, zagraniczny 17,1"
+        },
+        "skladka_do_budzetu_ue": {
+          "v": 47.6,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "subwencje_i_dotacje_jst": {
+          "v": 96.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "dotacja_fus": {
+          "v": 91.67,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "dotacja uzupełniająca do Funduszu Ubezpieczeń Społecznych (ZUS)"
+        },
+        "dotacja_fer_krus": {
+          "v": 30.516,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "Fundusz Emerytalno-Rentowy (emerytury rolnicze)"
+        },
+        "grupy_ekonomiczne": [
+          {
+            "nazwa": "Transfery bieżące (subwencje, dotacje, składka UE)",
+            "v": 431.629,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "nazwa": "Wydatki bieżące (m.in. wynagrodzenia, obsługa długu)",
+            "v": 287.048,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "nazwa": "Świadczenia na rzecz osób fizycznych",
+            "v": 172.545,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "nazwa": "Wydatki majątkowe",
+            "v": 50.85,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          {
+            "nazwa": "Transfery majątkowe",
+            "v": 35.528,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        ]
+      },
+      "deficyt": {
+        "v": 282.6,
+        "src": [
+          "mf_projekt_2027"
+        ],
+        "uwaga": "limit maksymalny"
+      },
+      "udzialy_jst_w_pit": {
+        "v": 206.7,
+        "src": [
+          "mf_uzas_2027"
+        ],
+        "uwaga": "część PIT przekazywana samorządom (+12,9 mld zł r/r); do budżetu państwa trafia tylko 33,4 mld zł"
+      },
+      "budzet_srodkow_europejskich": {
+        "dochody": {
+          "v": 87.271,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "wydatki": {
+          "v": 106.611,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "wynik": {
+          "v": -19.341,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "potrzeby_pozyczkowe": {
+        "netto": {
+          "v": 317.062,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "brutto": {
+          "v": 565.317,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "sektor_gg": {
+        "deficyt_pkb_proc": {
+          "v": 7.1,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "Komisja Europejska (maj 2026) i OECD prognozują 6,3% PKB"
+        }
+      },
+      "zmiany_podatkowe_w_projekcie": [
+        {
+          "opis": "PIT (skala): próg 12% podniesiony ze 120 do 130 tys. zł, nowa stawka 24% dla 130–150 tys. zł, stawka 32% powyżej 150 tys. zł",
+          "skutek_mld": {
+            "v": -9.1,
+            "src": [
+              "mf_uzas_2027"
+            ],
+            "uwaga": "całkowite wpływy PIT, ujęcie kasowe 2027"
+          }
+        },
+        {
+          "opis": "Ryczałt ewidencjonowany: limit przychodów obniżony z 2 mln euro do 250 tys. euro",
+          "skutek_mld": {
+            "v": 3.3,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        },
+        {
+          "opis": "OKI (Osobiste Konto Inwestycyjne) – alternatywa dla „podatku Belki”",
+          "skutek_mld": {
+            "v": -0.5,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        },
+        {
+          "opis": "CIT: stawka 22% zamiast 19% dla największych firm (przychody > 50 mln euro, bez banków) i PGK; wyższy podatek dla energetyki",
+          "skutek_mld": null
+        },
+        {
+          "opis": "VAT: napoje bezalkoholowe 5% → 23% (sklepy) i 8% → 23% (gastronomia)",
+          "skutek_mld": null
+        },
+        {
+          "opis": "Akcyza wg „mapy drogowej”: alkohol, wyroby tytoniowe, nowatorskie, płyn do e-papierosów, saszetki nikotynowe",
+          "skutek_mld": null
+        }
+      ],
+      "uwaga": "Zmiany podatkowe to projekty ustaw – część może nie wejść w życie (np. przez weto), co zmieni dochody."
+    }
+  },
+  "obszary": {
+    "opis": "Kwoty „łącznie” obejmują budżet państwa i środki poza nim (fundusze BGK, NFZ itd.) – tak jak prezentuje je rząd.",
+    "obronnosc": {
+      "2025": {
+        "budzet_panstwa_dzial_752": {
+          "v": 108.911,
+          "src": [
+            "mf_spr_2025"
+          ],
+          "uwaga": "wykonanie działu 752; bez FWSZ"
+        }
+      },
+      "2026": {
+        "lacznie": {
+          "v": 200.1,
+          "src": [
+            "mf_ustawa_2026_kom"
+          ],
+          "uwaga": "4,81% PKB"
+        },
+        "budzet_panstwa": {
+          "v": 126.7,
+          "src": [
+            "d24_2026"
+          ],
+          "uwaga": "z projektu: 120,5 (część 29) + 6,2 (dział 752 w innych częściach)"
+        },
+        "fwsz_i_safe": {
+          "v": 73.4,
+          "src": [
+            "mf_ustawa_2026_kom",
+            "d24_2026"
+          ],
+          "wyliczone": "łącznie − budżet państwa",
+          "weryfikuj": "Brak oficjalnej kwoty FWSZ 2026 w dostępnych dokumentach"
+        }
+      },
+      "2027": {
+        "lacznie": {
+          "v": 198.1,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "4,51% PKB"
+        },
+        "budzet_panstwa": {
+          "v": 131.7,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "3,0% PKB"
+        },
+        "fwsz": {
+          "v": 66.4,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "netto (po odjęciu transferów z budżetu i spłat kredytów); plan wydatków FWSZ brutto: 77,7 mld zł, w tym zasilenie z budżetu 6,5 mld zł; część zakupów finansowana pożyczkami SAFE i zwolniona z VAT"
+        }
+      }
+    },
+    "bezpieczenstwo_wewnetrzne": {
+      "2027": {
+        "lacznie": {
+          "v": 57.7,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "Policja, SG, PSP, SOP, służby specjalne – z emeryturami mundurowymi"
+        },
+        "struktury_mundurowe": {
+          "v": 36.5,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "zdrowie": {
+      "2026": {
+        "lacznie": {
+          "v": 247.8,
+          "src": [
+            "mf_ustawa_2026_kom"
+          ],
+          "uwaga": "6,8% PKB z 2024 r."
+        }
+      },
+      "2027": {
+        "lacznie": {
+          "v": 274.1,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "+26,3 mld zł; ustawowe minimum 7% PKB sprzed 2 lat = 273,9 mld zł"
+        },
+        "z_budzetu_panstwa": {
+          "v": 73.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "dotacja_nfz": {
+          "v": 41.5,
+          "src": [
+            "mf_uzas_2027"
+          ],
+          "uwaga": "+15,5 mld zł wobec 2026"
+        },
+        "fundusz_medyczny": {
+          "v": 8.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "nfz_plan_finansowy": {
+      "2026": {
+        "przychody": {
+          "v": 217.3,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        },
+        "skladka_zdrowotna": {
+          "v": 184.3,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        },
+        "dotacja": {
+          "v": 26.0,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        },
+        "swiadczenia": {
+          "v": 201.2,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        }
+      },
+      "2027": {
+        "przychody": {
+          "v": 237.3,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        },
+        "skladka_zdrowotna": {
+          "v": 194.1,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        },
+        "dotacja": {
+          "v": 35.0,
+          "src": [
+            "rz_nfz_2027"
+          ],
+          "uwaga": "plan NFZ z czerwca; projekt budżetu podniósł dotację do 41,5 mld zł"
+        },
+        "swiadczenia": {
+          "v": 219.9,
+          "src": [
+            "rz_nfz_2027"
+          ]
+        },
+        "luka": {
+          "v": 20.0,
+          "src": [
+            "rz_nfz_2027"
+          ],
+          "uwaga": "20–22 mld zł wg planu z czerwca, przed podniesieniem dotacji"
+        }
+      }
+    },
+    "drogi_i_kolej": {
+      "2026": {
+        "v": 53.9,
+        "src": [
+          "prawo_podpis_2026"
+        ]
+      },
+      "2027": {
+        "v": 62.4,
+        "src": [
+          "mf_uzas_2027"
+        ],
+        "uwaga": "bez CPK; w tym 26,4 mld zł z budżetu państwa"
+      }
+    },
+    "nauka_i_szkolnictwo_wyzsze": {
+      "2027": {
+        "v": 43.7,
+        "src": [
+          "mf_uzas_2027"
+        ],
+        "uwaga": "z budżetu państwa; media podają też 46,2 mld zł (z innymi źródłami)"
+      }
+    },
+    "energetyka": {
+      "2027": {
+        "elektrownia_jadrowa": {
+          "v": 8.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "gornictwo_wegla": {
+          "v": 6.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "fundusz_modernizacyjny_nfosigw": {
+          "v": 7.2,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "fundusz_zapasow_interwencyjnych": {
+          "v": 2.8,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "mieszkalnictwo": {
+      "2027": {
+        "v": 5.8,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "gospodarka_morska": {
+      "2027": {
+        "v": 2.4,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "fundusze_bgk_2027": {
+      "opis": "Plany finansowe funduszy przy BGK na 2027 r. (poza budżetem państwa, ale w długu wg definicji UE)",
+      "wplywy": {
+        "v": 134.599,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "wydatki": {
+        "v": 165.941,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "zasilenie_z_budzetu": {
+        "v": 15.697,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      },
+      "najwieksze": [
+        {
+          "nazwa": "Fundusz Wsparcia Sił Zbrojnych",
+          "wplywy": {
+            "v": 77.307,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "wydatki": {
+            "v": 77.665,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        },
+        {
+          "nazwa": "Fundusz Przeciwdziałania COVID-19",
+          "wplywy": {
+            "v": 10.328,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "wydatki": {
+            "v": 36.631,
+            "src": [
+              "mf_uzas_2027"
+            ],
+            "uwaga": "głównie spłata zadłużenia z lat 2020–2021"
+          }
+        },
+        {
+          "nazwa": "Krajowy Fundusz Drogowy",
+          "wplywy": {
+            "v": 30.043,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "wydatki": {
+            "v": 32.663,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        },
+        {
+          "nazwa": "Rządowy Fundusz Rozwoju Dróg",
+          "wplywy": {
+            "v": 3.434,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "wydatki": {
+            "v": 5.195,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        },
+        {
+          "nazwa": "Fundusz Dopłat",
+          "wplywy": {
+            "v": 3.777,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "wydatki": {
+            "v": 3.623,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        },
+        {
+          "nazwa": "Fundusz Pomocy (Ukraina)",
+          "wplywy": {
+            "v": 3.274,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          },
+          "wydatki": {
+            "v": 3.274,
+            "src": [
+              "mf_uzas_2027"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "programy_spoleczne": {
+    "opis": "Wybrane świadczenia finansowane z budżetu państwa – koszt roczny w mld zł",
+    "rodzina_800_plus": {
+      "2026": {
+        "v": 61.7,
+        "src": [
+          "mf_ustawa_2026_kom"
+        ]
+      },
+      "2027": {
+        "v": 60.8,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "emerytura_13_i_14": {
+      "2026": {
+        "v": 31.8,
+        "src": [
+          "mf_ustawa_2026_kom"
+        ]
+      },
+      "2027": {
+        "v": 32.1,
+        "src": [
+          "mf_uzas_2027"
+        ],
+        "uwaga": "13. i 14. emerytura łącznie"
+      }
+    },
+    "waloryzacja_emerytur": {
+      "2026": {
+        "v": 22.0,
+        "src": [
+          "mf_ustawa_2026_kom"
+        ],
+        "uwaga": "ok."
+      },
+      "2027": {
+        "v": 19.0,
+        "src": [
+          "lex_2027"
+        ],
+        "uwaga": "ok.; kwoty nie ma wprost w uzasadnieniu"
+      }
+    },
+    "aktywny_rodzic": {
+      "2027": {
+        "v": 7.0,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "swiadczenie_wspierajace": {
+      "2027": {
+        "v": 12.6,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "podwyzki_sfera_budzetowa_3proc": {
+      "2027": {
+        "v": 7.8,
+        "src": [
+          "mf_uzas_2027"
+        ],
+        "uwaga": "koszt r/r z pochodnymi; nauczyciele i państwowa sfera budżetowa"
+      }
+    },
+    "renta_wdowia_2027": {
+      "opis": "Od 1.01.2027 wzrost z 15% do 25% drugiego świadczenia – uwzględnione w dotacjach do FUS i FER",
+      "src": [
+        "mf_uzas_2027"
+      ]
+    }
+  },
+  "dlug": {
+    "opis": "Definicje: PDP – państwowy dług publiczny (krajowa, bez większości funduszy BGK); „kwota z art. 38a pkt 3” – PDP po przeliczeniu walut po średnim kursie i minus wolne środki – to od niej liczy się progi 55% i 60%; GG – dług sektora instytucji rządowych i samorządowych wg UE (z funduszami BGK).",
+    "warianty": "„wg limitów” = pełne wykorzystanie limitów deficytu; „przewidywane” = z uwzględnieniem niewykonania wydatków",
+    "koniec_2025": {
+      "pdp": {
+        "mld": {
+          "v": 1913.5,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 48.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "kwota_art_38a": {
+        "mld": {
+          "v": 1783.2,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 45.6,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "dlug_sp": {
+        "mld": {
+          "v": 1951.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 49.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "gg": {
+        "mld": {
+          "v": 2335.1,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 59.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "koniec_2026_wg_limitow": {
+      "pdp": {
+        "mld": {
+          "v": 2311.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 55.6,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "kwota_art_38a": {
+        "mld": {
+          "v": 2168.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 52.2,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "dlug_sp": {
+        "mld": {
+          "v": 2354.5,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 56.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "gg": {
+        "mld": {
+          "v": 2822.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 67.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "koniec_2026_przewidywane": {
+      "pdp": {
+        "mld": {
+          "v": 2298.8,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 55.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "kwota_art_38a": {
+        "mld": {
+          "v": 2155.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 51.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "dlug_sp": {
+        "mld": {
+          "v": 2341.6,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 56.4,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "gg": {
+        "mld": {
+          "v": 2809.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 67.6,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "koniec_2027_wg_limitow": {
+      "pdp": {
+        "mld": {
+          "v": 2510.4,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 57.1,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "kwota_art_38a": {
+        "mld": {
+          "v": 2460.1,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 55.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "dlug_sp": {
+        "mld": {
+          "v": 2572.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 58.5,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "gg": {
+        "mld": {
+          "v": 3106.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 70.6,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "koniec_2027_przewidywane": {
+      "pdp": {
+        "mld": {
+          "v": 2460.0,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 55.9,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "kwota_art_38a": {
+        "mld": {
+          "v": 2409.7,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 54.8,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "dlug_sp": {
+        "mld": {
+          "v": 2522.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 57.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      },
+      "gg": {
+        "mld": {
+          "v": 3056.3,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        },
+        "pkb_proc": {
+          "v": 69.5,
+          "src": [
+            "mf_uzas_2027"
+          ]
+        }
+      }
+    },
+    "fundusze_bgk_koniec_2025": {
+      "lacznie": {
+        "v": 421.6,
+        "src": [
+          "rp_dlug_2025q4",
+          "mf_dlug_2025q4"
+        ]
+      },
+      "fwsz": {
+        "v": 80.9,
+        "src": [
+          "rp_dlug_2025q4"
+        ]
+      },
+      "kfd": {
+        "v": 70.4,
+        "src": [
+          "rp_dlug_2025q4"
+        ]
+      }
+    },
+    "obsluga_dlugu_sp": {
+      "2025": {
+        "v": 72.828,
+        "src": [
+          "mf_spr_2025"
+        ]
+      },
+      "2026": {
+        "v": 90.0,
+        "src": [
+          "mf_ub_2026",
+          "mf_strategia_dlug"
+        ],
+        "uwaga": "2,2% PKB wg Strategii"
+      },
+      "2027": {
+        "v": 107.0,
+        "src": [
+          "mf_uzas_2027"
+        ]
+      }
+    },
+    "prog_55": "MF: w wariancie przewidywanym kwota z art. 38a wyniesie 54,8% PKB na koniec 2027 r. – próg 55% nie zostanie przekroczony; wg limitów 55,9%. Rada Fiskalna (14.09.2026): ryzyko przekroczenia 55% w 2027 r. „bardzo wysokie”. O przekroczeniu zdecydują wartości wykonane.",
+    "progi": [
+      {
+        "prog_proc": 55,
+        "opis": "Próg ostrożnościowy (ustawa o finansach publicznych): po przekroczeniu budżet na kolejny rok musi obniżać relację długu do PKB – m.in. zamrożenie płac w sferze budżetowej, ograniczenia wydatków"
+      },
+      {
+        "prog_proc": 60,
+        "opis": "Limit konstytucyjny (art. 216 ust. 5 Konstytucji)"
+      }
+    ],
+    "procedura_nadmiernego_deficytu": "Polska objęta EDP od lipca 2024 r.; 21.01.2025 Rada UE wyznaczyła 2028 r. jako termin likwidacji nadmiernego deficytu. KE 3.06.2026 oceniła politykę budżetową jako zgodną ze ścieżką wydatków netto i utrzymała zawieszenie EDP (klauzula wyjścia na obronność, do 1,5% PKB).",
+    "src": [
+      "mf_uzas_2027",
+      "rf_2027"
+    ]
+  },
+  "sektor_finansow_publicznych_2025": {
+    "opis": "Wydatki całego sektora finansów publicznych w 2025 r. wg funkcji (budżet państwa, JST, ZUS/FUS, NFZ, fundusze celowe) – dane NIK",
+    "ogolem": {
+      "v": 1924.0,
+      "src": [
+        "nik_2025"
+      ]
+    },
+    "funkcje": [
+      {
+        "nazwa": "Ubezpieczenia i zabezpieczenie społeczne",
+        "v": 569.0,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Gospodarka",
+        "v": 241.9,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Ochrona zdrowia",
+        "v": 232.4,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Finanse (w tym obsługa długu)",
+        "v": 166.2,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Oświata i wychowanie",
+        "v": 143.8,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Obrona narodowa",
+        "v": 140.0,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Rodzina",
+        "v": 113.1,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Administracja publiczna i kontrola",
+        "v": 70.3,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Ochrona środowiska i gospodarka wodna",
+        "v": 46.7,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Polityka społeczna",
+        "v": 44.3,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Bezpieczeństwo publiczne",
+        "v": 39.7,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Kultura, sport i turystyka",
+        "v": 37.9,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Nauka i szkolnictwo wyższe",
+        "v": 36.4,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Wymiar sprawiedliwości",
+        "v": 27.5,
+        "src": [
+          "nik_2025"
+        ]
+      },
+      {
+        "nazwa": "Rynek pracy",
+        "v": 15.1,
+        "src": [
+          "nik_2025"
+        ]
+      }
+    ],
+    "obsluga_dlugu": {
+      "v": 88.7,
+      "src": [
+        "nik_2025"
+      ]
+    },
+    "uwaga": "Obrona w ujęciu sektora (140 mld zł) nie obejmuje Funduszu Wsparcia Sił Zbrojnych – formalnie jest poza sektorem finansów publicznych wg definicji krajowej."
+  },
+  "porownanie_ue": {
+    "saldo_i_dlug_2025": {
+      "opis": "Deficyt/nadwyżka i dług sektora GG w 2025 r., % PKB (notyfikacja kwietniowa)",
+      "src": [
+        "eurostat_2026_04"
+      ],
+      "agregaty": {
+        "UE27": {
+          "saldo": -3.1,
+          "dlug": 81.7,
+          "wydatki": 49.5,
+          "dochody": 46.4
+        },
+        "strefa_euro_20": {
+          "saldo": -2.9,
+          "dlug": 87.8,
+          "wydatki": 49.8,
+          "dochody": 46.9
+        }
+      },
+      "polska_szczegoly": {
+        "wydatki": 50.9,
+        "dochody": 43.6
+      },
+      "kraje": {
+        "Belgia": {
+          "saldo": -5.2,
+          "dlug": 107.9
+        },
+        "Bułgaria": {
+          "saldo": -3.5,
+          "dlug": 29.9
+        },
+        "Czechy": {
+          "saldo": -2.1,
+          "dlug": 44.3
+        },
+        "Dania": {
+          "saldo": 2.9,
+          "dlug": 27.9
+        },
+        "Niemcy": {
+          "saldo": -2.7,
+          "dlug": 63.5
+        },
+        "Estonia": {
+          "saldo": -2.0,
+          "dlug": 24.1
+        },
+        "Irlandia": {
+          "saldo": 1.8,
+          "dlug": 32.9
+        },
+        "Grecja": {
+          "saldo": 1.7,
+          "dlug": 146.1
+        },
+        "Hiszpania": {
+          "saldo": -2.4,
+          "dlug": 100.7
+        },
+        "Francja": {
+          "saldo": -5.1,
+          "dlug": 115.6
+        },
+        "Chorwacja": {
+          "saldo": -3.0,
+          "dlug": 56.3
+        },
+        "Włochy": {
+          "saldo": -3.1,
+          "dlug": 137.1
+        },
+        "Cypr": {
+          "saldo": 3.4,
+          "dlug": 55.0
+        },
+        "Łotwa": {
+          "saldo": -2.5,
+          "dlug": 46.9
+        },
+        "Litwa": {
+          "saldo": -1.8,
+          "dlug": 39.5
+        },
+        "Luksemburg": {
+          "saldo": -2.0,
+          "dlug": 26.5
+        },
+        "Węgry": {
+          "saldo": -4.7,
+          "dlug": 74.6
+        },
+        "Malta": {
+          "saldo": -2.2,
+          "dlug": 46.4
+        },
+        "Holandia": {
+          "saldo": -1.6,
+          "dlug": 44.4
+        },
+        "Austria": {
+          "saldo": -4.2,
+          "dlug": 81.5
+        },
+        "Polska": {
+          "saldo": -7.3,
+          "dlug": 59.7
+        },
+        "Portugalia": {
+          "saldo": 0.7,
+          "dlug": 89.7
+        },
+        "Rumunia": {
+          "saldo": -7.9,
+          "dlug": 59.3
+        },
+        "Słowenia": {
+          "saldo": -2.5,
+          "dlug": 65.7
+        },
+        "Słowacja": {
+          "saldo": -4.5,
+          "dlug": 61.4
+        },
+        "Finlandia": {
+          "saldo": -3.4,
+          "dlug": 88.5
+        },
+        "Szwecja": {
+          "saldo": -1.3,
+          "dlug": 35.1
+        }
+      }
+    },
+    "wydatki_wg_funkcji_2024": {
+      "opis": "Wydatki sektora GG wg funkcji COFOG w 2024 r., % PKB (najnowszy dostępny rok). Obrona w ujęciu COFOG różni się od definicji NATO.",
+      "src": [
+        "eurostat_cofog"
+      ],
+      "kraje": {
+        "UE-27": {
+          "ogolem": 48.9,
+          "uslugi_publiczne_ogolne": 6.1,
+          "obrona": 1.5,
+          "porzadek_publiczny": 1.7,
+          "sprawy_gospodarcze": 5.3,
+          "srodowisko": 0.8,
+          "mieszkalnictwo": 0.7,
+          "zdrowie": 7.3,
+          "kultura_rekreacja": 1.2,
+          "edukacja": 4.7,
+          "ochrona_socjalna": 19.6
+        },
+        "Belgia": {
+          "ogolem": 54.1,
+          "uslugi_publiczne_ogolne": 7.1,
+          "obrona": 1.3,
+          "porzadek_publiczny": 1.7,
+          "sprawy_gospodarcze": 6.4,
+          "srodowisko": 1.2,
+          "mieszkalnictwo": 0.4,
+          "zdrowie": 8.0,
+          "kultura_rekreacja": 1.2,
+          "edukacja": 6.3,
+          "ochrona_socjalna": 20.4
+        },
+        "Bułgaria": {
+          "ogolem": 39.2,
+          "uslugi_publiczne_ogolne": 2.9,
+          "obrona": 1.3,
+          "porzadek_publiczny": 2.8,
+          "sprawy_gospodarcze": 5.8,
+          "srodowisko": 0.6,
+          "mieszkalnictwo": 1.0,
+          "zdrowie": 5.4,
+          "kultura_rekreacja": 0.7,
+          "edukacja": 4.3,
+          "ochrona_socjalna": 14.4
+        },
+        "Czechy": {
+          "ogolem": 42.9,
+          "uslugi_publiczne_ogolne": 4.7,
+          "obrona": 1.3,
+          "porzadek_publiczny": 1.6,
+          "sprawy_gospodarcze": 5.5,
+          "srodowisko": 0.9,
+          "mieszkalnictwo": 0.9,
+          "zdrowie": 9.0,
+          "kultura_rekreacja": 1.3,
+          "edukacja": 4.5,
+          "ochrona_socjalna": 13.2
+        },
+        "Dania": {
+          "ogolem": 47.3,
+          "uslugi_publiczne_ogolne": 5.7,
+          "obrona": 1.8,
+          "porzadek_publiczny": 1.0,
+          "sprawy_gospodarcze": 3.1,
+          "srodowisko": 0.4,
+          "mieszkalnictwo": 0.3,
+          "zdrowie": 8.3,
+          "kultura_rekreacja": 1.5,
+          "edukacja": 5.6,
+          "ochrona_socjalna": 19.6
+        },
+        "Niemcy": {
+          "ogolem": 49.4,
+          "uslugi_publiczne_ogolne": 6.4,
+          "obrona": 1.4,
+          "porzadek_publiczny": 1.6,
+          "sprawy_gospodarcze": 5.4,
+          "srodowisko": 0.6,
+          "mieszkalnictwo": 0.5,
+          "zdrowie": 7.6,
+          "kultura_rekreacja": 1.1,
+          "edukacja": 4.5,
+          "ochrona_socjalna": 20.4
+        },
+        "Estonia": {
+          "ogolem": 44.0,
+          "uslugi_publiczne_ogolne": 4.3,
+          "obrona": 3.7,
+          "porzadek_publiczny": 1.8,
+          "sprawy_gospodarcze": 4.6,
+          "srodowisko": 0.7,
+          "mieszkalnictwo": 0.4,
+          "zdrowie": 6.3,
+          "kultura_rekreacja": 1.9,
+          "edukacja": 6.3,
+          "ochrona_socjalna": 13.8
+        },
+        "Irlandia": {
+          "ogolem": 22.4,
+          "uslugi_publiczne_ogolne": 2.0,
+          "obrona": 0.1,
+          "porzadek_publiczny": 0.7,
+          "sprawy_gospodarcze": 2.1,
+          "srodowisko": 0.4,
+          "mieszkalnictwo": 0.6,
+          "zdrowie": 5.2,
+          "kultura_rekreacja": 0.4,
+          "edukacja": 2.7,
+          "ochrona_socjalna": 8.2
+        },
+        "Grecja": {
+          "ogolem": 48.2,
+          "uslugi_publiczne_ogolne": 8.3,
+          "obrona": 2.2,
+          "porzadek_publiczny": 2.0,
+          "sprawy_gospodarcze": 6.0,
+          "srodowisko": 0.9,
+          "mieszkalnictwo": 0.5,
+          "zdrowie": 5.7,
+          "kultura_rekreacja": 1.0,
+          "edukacja": 3.9,
+          "ochrona_socjalna": 17.7
+        },
+        "Hiszpania": {
+          "ogolem": 45.5,
+          "uslugi_publiczne_ogolne": 5.8,
+          "obrona": 0.9,
+          "porzadek_publiczny": 1.8,
+          "sprawy_gospodarcze": 5.1,
+          "srodowisko": 1.0,
+          "mieszkalnictwo": 0.5,
+          "zdrowie": 6.5,
+          "kultura_rekreacja": 1.2,
+          "edukacja": 4.1,
+          "ochrona_socjalna": 18.7
+        },
+        "Francja": {
+          "ogolem": 57.3,
+          "uslugi_publiczne_ogolne": 6.2,
+          "obrona": 1.9,
+          "porzadek_publiczny": 1.8,
+          "sprawy_gospodarcze": 5.7,
+          "srodowisko": 1.0,
+          "mieszkalnictwo": 1.4,
+          "zdrowie": 8.9,
+          "kultura_rekreacja": 1.5,
+          "edukacja": 5.1,
+          "ochrona_socjalna": 23.7
+        },
+        "Chorwacja": {
+          "ogolem": 48.0,
+          "uslugi_publiczne_ogolne": 5.5,
+          "obrona": 1.5,
+          "porzadek_publiczny": 2.4,
+          "sprawy_gospodarcze": 6.4,
+          "srodowisko": 1.2,
+          "mieszkalnictwo": 1.5,
+          "zdrowie": 9.0,
+          "kultura_rekreacja": 1.7,
+          "edukacja": 5.0,
+          "ochrona_socjalna": 13.8
+        },
+        "Włochy": {
+          "ogolem": 50.4,
+          "uslugi_publiczne_ogolne": 7.7,
+          "obrona": 1.3,
+          "porzadek_publiczny": 1.8,
+          "sprawy_gospodarcze": 5.1,
+          "srodowisko": 0.9,
+          "mieszkalnictwo": 0.8,
+          "zdrowie": 6.6,
+          "kultura_rekreacja": 0.9,
+          "edukacja": 4.0,
+          "ochrona_socjalna": 21.3
+        },
+        "Cypr": {
+          "ogolem": 38.3,
+          "uslugi_publiczne_ogolne": 5.3,
+          "obrona": 1.8,
+          "porzadek_publiczny": 1.7,
+          "sprawy_gospodarcze": 2.9,
+          "srodowisko": 0.6,
+          "mieszkalnictwo": 2.1,
+          "zdrowie": 6.1,
+          "kultura_rekreacja": 0.5,
+          "edukacja": 5.0,
+          "ochrona_socjalna": 12.4
+        },
+        "Łotwa": {
+          "ogolem": 45.6,
+          "uslugi_publiczne_ogolne": 4.6,
+          "obrona": 2.7,
+          "porzadek_publiczny": 3.2,
+          "sprawy_gospodarcze": 6.6,
+          "srodowisko": 0.5,
+          "mieszkalnictwo": 1.0,
+          "zdrowie": 5.4,
+          "kultura_rekreacja": 1.4,
+          "edukacja": 6.1,
+          "ochrona_socjalna": 14.1
+        },
+        "Litwa": {
+          "ogolem": 39.4,
+          "uslugi_publiczne_ogolne": 3.6,
+          "obrona": 2.6,
+          "porzadek_publiczny": 1.6,
+          "sprawy_gospodarcze": 3.2,
+          "srodowisko": 0.5,
+          "mieszkalnictwo": 0.8,
+          "zdrowie": 5.8,
+          "kultura_rekreacja": 1.3,
+          "edukacja": 5.5,
+          "ochrona_socjalna": 14.7
+        },
+        "Luksemburg": {
+          "ogolem": 46.8,
+          "uslugi_publiczne_ogolne": 5.6,
+          "obrona": 0.7,
+          "porzadek_publiczny": 1.3,
+          "sprawy_gospodarcze": 5.9,
+          "srodowisko": 1.1,
+          "mieszkalnictwo": 0.6,
+          "zdrowie": 5.6,
+          "kultura_rekreacja": 1.3,
+          "edukacja": 5.0,
+          "ochrona_socjalna": 19.9
+        },
+        "Węgry": {
+          "ogolem": 47.1,
+          "uslugi_publiczne_ogolne": 10.0,
+          "obrona": 2.0,
+          "porzadek_publiczny": 1.8,
+          "sprawy_gospodarcze": 7.7,
+          "srodowisko": 0.4,
+          "mieszkalnictwo": 1.0,
+          "zdrowie": 4.7,
+          "kultura_rekreacja": 2.5,
+          "edukacja": 4.9,
+          "ochrona_socjalna": 12.3
+        },
+        "Malta": {
+          "ogolem": 37.3,
+          "uslugi_publiczne_ogolne": 5.0,
+          "obrona": 0.5,
+          "porzadek_publiczny": 1.5,
+          "sprawy_gospodarcze": 7.6,
+          "srodowisko": 1.2,
+          "mieszkalnictwo": 0.6,
+          "zdrowie": 5.0,
+          "kultura_rekreacja": 1.5,
+          "edukacja": 4.7,
+          "ochrona_socjalna": 9.8
+        },
+        "Holandia": {
+          "ogolem": 44.4,
+          "uslugi_publiczne_ogolne": 4.1,
+          "obrona": 1.6,
+          "porzadek_publiczny": 1.9,
+          "sprawy_gospodarcze": 4.4,
+          "srodowisko": 1.6,
+          "mieszkalnictwo": 0.6,
+          "zdrowie": 7.3,
+          "kultura_rekreacja": 1.2,
+          "edukacja": 5.1,
+          "ochrona_socjalna": 16.6
+        },
+        "Austria": {
+          "ogolem": 55.2,
+          "uslugi_publiczne_ogolne": 6.0,
+          "obrona": 0.7,
+          "porzadek_publiczny": 1.5,
+          "sprawy_gospodarcze": 7.1,
+          "srodowisko": 0.7,
+          "mieszkalnictwo": 0.4,
+          "zdrowie": 9.5,
+          "kultura_rekreacja": 1.3,
+          "edukacja": 5.3,
+          "ochrona_socjalna": 22.8
+        },
+        "Polska": {
+          "ogolem": 49.4,
+          "uslugi_publiczne_ogolne": 5.2,
+          "obrona": 2.9,
+          "porzadek_publiczny": 2.4,
+          "sprawy_gospodarcze": 6.1,
+          "srodowisko": 0.7,
+          "mieszkalnictwo": 0.6,
+          "zdrowie": 6.1,
+          "kultura_rekreacja": 1.4,
+          "edukacja": 5.6,
+          "ochrona_socjalna": 18.3
+        },
+        "Portugalia": {
+          "ogolem": 42.4,
+          "uslugi_publiczne_ogolne": 5.8,
+          "obrona": 0.9,
+          "porzadek_publiczny": 1.6,
+          "sprawy_gospodarcze": 3.6,
+          "srodowisko": 0.7,
+          "mieszkalnictwo": 0.6,
+          "zdrowie": 6.8,
+          "kultura_rekreacja": 0.8,
+          "edukacja": 4.3,
+          "ochrona_socjalna": 17.1
+        },
+        "Rumunia": {
+          "ogolem": 43.3,
+          "uslugi_publiczne_ogolne": 5.8,
+          "obrona": 1.6,
+          "porzadek_publiczny": 2.8,
+          "sprawy_gospodarcze": 6.7,
+          "srodowisko": 0.9,
+          "mieszkalnictwo": 1.5,
+          "zdrowie": 5.2,
+          "kultura_rekreacja": 1.1,
+          "edukacja": 4.0,
+          "ochrona_socjalna": 13.6
+        },
+        "Słowenia": {
+          "ogolem": 46.5,
+          "uslugi_publiczne_ogolne": 4.6,
+          "obrona": 1.4,
+          "porzadek_publiczny": 1.5,
+          "sprawy_gospodarcze": 5.7,
+          "srodowisko": 0.7,
+          "mieszkalnictwo": 0.4,
+          "zdrowie": 8.0,
+          "kultura_rekreacja": 1.5,
+          "edukacja": 5.5,
+          "ochrona_socjalna": 17.1
+        },
+        "Słowacja": {
+          "ogolem": 47.5,
+          "uslugi_publiczne_ogolne": 5.5,
+          "obrona": 1.4,
+          "porzadek_publiczny": 2.3,
+          "sprawy_gospodarcze": 5.5,
+          "srodowisko": 0.8,
+          "mieszkalnictwo": 0.5,
+          "zdrowie": 6.9,
+          "kultura_rekreacja": 1.1,
+          "edukacja": 5.1,
+          "ochrona_socjalna": 18.4
+        },
+        "Finlandia": {
+          "ogolem": 57.7,
+          "uslugi_publiczne_ogolne": 7.1,
+          "obrona": 1.6,
+          "porzadek_publiczny": 1.3,
+          "sprawy_gospodarcze": 4.9,
+          "srodowisko": 0.2,
+          "mieszkalnictwo": 0.5,
+          "zdrowie": 7.7,
+          "kultura_rekreacja": 1.7,
+          "edukacja": 6.3,
+          "ochrona_socjalna": 26.5
+        },
+        "Szwecja": {
+          "ogolem": 50.5,
+          "uslugi_publiczne_ogolne": 5.5,
+          "obrona": 2.0,
+          "porzadek_publiczny": 1.6,
+          "sprawy_gospodarcze": 4.8,
+          "srodowisko": 0.5,
+          "mieszkalnictwo": 0.8,
+          "zdrowie": 7.4,
+          "kultura_rekreacja": 1.4,
+          "edukacja": 7.3,
+          "ochrona_socjalna": 19.1
+        }
+      }
+    }
+  },
+  "na_osobe": {
+    "opis": "Przeliczenia na mieszkańca (ludność na koniec 2025 r.: 37,332 mln)",
+    "ludnosc_mln": {
+      "v": 37.332,
+      "src": [
+        "gus_ludnosc_2025"
+      ]
+    },
+    "wydatki_2027_na_osobe_zl": {
+      "v": 26187,
+      "src": [
+        "mf_projekt_2027",
+        "gus_ludnosc_2025"
+      ],
+      "wyliczone": "977,6 mld / 37,332 mln"
+    },
+    "deficyt_2027_na_osobe_zl": {
+      "v": 7570,
+      "src": [
+        "mf_projekt_2027",
+        "gus_ludnosc_2025"
+      ],
+      "wyliczone": "282,6 mld / 37,332 mln"
+    },
+    "dlug_gg_2025_na_osobe_zl": {
+      "v": 62550,
+      "src": [
+        "mf_uzas_2027",
+        "gus_ludnosc_2025"
+      ],
+      "wyliczone": "2335,1 mld / 37,332 mln"
+    },
+    "dlug_gg_2027_przewidywany_na_osobe_zl": {
+      "v": 81868,
+      "src": [
+        "mf_uzas_2027",
+        "gus_ludnosc_2025"
+      ],
+      "wyliczone": "3056,3 mld / 37,332 mln (ludność z 2025 r.)"
+    },
+    "obsluga_dlugu_2027_dziennie_mln_zl": {
+      "v": 293.2,
+      "src": [
+        "mf_uzas_2027"
+      ],
+      "wyliczone": "107 mld / 365 dni"
+    },
+    "rodzina800_2027_na_osobe_zl": {
+      "v": 1629,
+      "src": [
+        "mf_uzas_2027",
+        "gus_ludnosc_2025"
+      ],
+      "wyliczone": "60,8 mld / 37,332 mln"
+    }
+  },
+  "parametry_podatkowe": {
+    "opis": "Parametry do kalkulatora „Twoje podatki” – umowa o pracę i emeryt",
+    "2026": {
+      "src": [
+        "place_2026"
+      ],
+      "placa_minimalna": 4806,
+      "pit": {
+        "stawka_1": 0.12,
+        "stawka_2": 0.32,
+        "prog_roczny": 120000,
+        "kwota_wolna": 30000,
+        "kwota_zmniejszajaca_mies": 300,
+        "koszty_uzyskania_mies": {
+          "podstawowe": 250,
+          "podwyzszone": 300
+        }
+      },
+      "zus_pracownik": {
+        "emerytalna": 0.0976,
+        "rentowa": 0.015,
+        "chorobowa": 0.0245,
+        "limit_30_krotnosci_roczny": 282600
+      },
+      "zdrowotna": {
+        "stawka": 0.09,
+        "podstawa": "przychód − składki społeczne pracownika",
+        "odliczenie_od_pit": false
+      },
+      "zus_pracodawca": {
+        "emerytalna": 0.0976,
+        "rentowa": 0.065,
+        "wypadkowa_typowa": 0.0167,
+        "fp_i_fs": 0.0245,
+        "fgsp": 0.001
+      }
+    },
+    "2027_projekt": {
+      "src": [
+        "mf_uzas_2027",
+        "infor_min_2027"
+      ],
+      "placa_minimalna": {
+        "v": 4950,
+        "src": [
+          "infor_min_2027"
+        ],
+        "uwaga": "rozporządzenie z 15.09.2026"
+      },
+      "pit_skala": [
+        {
+          "do": 130000,
+          "stawka": 0.12
+        },
+        {
+          "do": 150000,
+          "stawka": 0.24
+        },
+        {
+          "do": null,
+          "stawka": 0.32
+        }
+      ],
+      "uwaga": "Projekt zmian PIT (projekt ustawy) – kalkulator powinien pokazywać wariant 2026 i wariant „jeśli wejdzie w życie” dla 2027. Kwota wolna i sposób liczenia kwoty zmniejszającej do potwierdzenia w projekcie ustawy."
+    },
+    "vat_stawki": {
+      "podstawowa": 0.23,
+      "obnizone": [
+        0.08,
+        0.05
+      ],
+      "src": [
+        "mf_uzas_2027"
+      ],
+      "uwaga": "Projekt 2027: napoje bezalkoholowe 5%/8% → 23%"
+    },
+    "akcyza_2026": {
+      "src": [
+        "mf_akcyza_stawki"
+      ],
+      "benzyna_zl_1000l": 1529,
+      "olej_napedowy_zl_1000l": 1160,
+      "lpg_zl_1000kg": 659,
+      "energia_zl_mwh": 5,
+      "papierosy": {
+        "kwotowa_zl_1000szt": 414.0,
+        "procentowa_ceny_detalicznej": 0.3205
+      },
+      "tyton_do_palenia": {
+        "kwotowa_zl_kg": 188.51,
+        "procentowa_ceny_detalicznej": 0.3205
+      },
+      "wyroby_nowatorskie_zl_kg": 377.01,
+      "alkohol_etylowy_zl_hl_100proc": 8391,
+      "piwo_zl_hl_plato": 11.47,
+      "wino_zl_hl": 233,
+      "plyn_do_e_papierosow": {
+        "v": null,
+        "src": [
+          "mf_akcyza_stawki",
+          "duda_eliquid"
+        ],
+        "weryfikuj": "Rozbieżne źródła: 0,55 zł/ml (płyn do napełniania) vs 0,96 zł/ml (+40 zł/szt. dla jednorazówek). Sprawdzić w ustawie o podatku akcyzowym (art. 99c) przed użyciem w kalkulatorze"
+      },
+      "uwaga": "Stawki standardowe; wiosną 2026 (CPN) akcyza na paliwa była czasowo obniżona do minimum UE (do 15.06.2026)"
+    },
+    "oplata_paliwowa_2026": {
+      "src": [
+        "fraikin_oplata"
+      ],
+      "benzyna_zl_1000l": 210.29,
+      "olej_napedowy_zl_1000l": 453.52,
+      "lpg_zl_1000kg": 256.75
+    },
+    "koszyk_gus_2025": {
+      "src": [
+        "gus_bgd_2025"
+      ],
+      "wydatki_na_osobe_mies_zl": 2015,
+      "dochod_rozporzadzalny_na_osobe_mies_zl": 3500,
+      "struktura_proc": {
+        "Żywność i napoje bezalkoholowe": 25.1,
+        "Użytkowanie mieszkania i nośniki energii": 19.4,
+        "Transport": 9.8,
+        "Rekreacja i kultura": 7.2,
+        "Pozostałe towary i usługi": 6.2,
+        "Zdrowie": 6.0,
+        "Łączność": 5.3,
+        "Wyposażenie mieszkania": 5.0,
+        "Restauracje i hotele": 3.8,
+        "Odzież i obuwie": 3.6,
+        "Napoje alkoholowe i wyroby tytoniowe": 2.4,
+        "Edukacja": 1.0,
+        "Pozostałe wydatki": 1.7,
+        "Kieszonkowe": 1.7
+      },
+      "weryfikuj": "Udziały odczytane z wykresu w publikacji GUS (suma 98,2%) – przed użyciem sprawdzić w tablicach XLSX GUS"
+    }
+  },
+  "kalendarz_budzetowy": [
+    {
+      "etap": "Wieloletnie założenia i projekt budżetu",
+      "termin": "Rada Ministrów przyjmuje projekt; do Sejmu – do 30 września",
+      "podstawa": "Konstytucja art. 222",
+      "przyklad_2027": "Projekt przyjęty 28.08.2026 i przekazany Radzie Dialogu Społecznego",
+      "src": [
+        "konstytucja",
+        "mf_rds_2027"
+      ]
+    },
+    {
+      "etap": "Opinia Rady Fiskalnej",
+      "termin": "po przyjęciu projektu (Rada działa od 1.01.2026)",
+      "przyklad_2027": "14.09.2026 – ryzyko przekroczenia progu 55% PKB „bardzo wysokie”",
+      "src": [
+        "rf_2027",
+        "mf_uzas_2027"
+      ]
+    },
+    {
+      "etap": "Prace w Sejmie (3 czytania)",
+      "termin": "październik–grudzień",
+      "przyklad_2026": "Sejm uchwalił ustawę 5.12.2025; po poprawkach Senatu ustawa ma datę 9.01.2026",
+      "src": [
+        "mf_ustawa_2026_kom",
+        "mf_ub_2026"
+      ]
+    },
+    {
+      "etap": "Senat",
+      "termin": "20 dni na poprawki",
+      "podstawa": "Konstytucja art. 223",
+      "src": [
+        "konstytucja"
+      ]
+    },
+    {
+      "etap": "Prezydent",
+      "termin": "7 dni na podpis; nie może zawetować ustawy budżetowej, może skierować ją do TK",
+      "podstawa": "Konstytucja art. 224",
+      "przyklad_2026": "Podpis w styczniu 2026 z jednoczesnym skierowaniem do TK; publikacja Dz.U. 2026 poz. 62",
+      "src": [
+        "konstytucja",
+        "prawo_podpis_2026",
+        "mf_ub_2026"
+      ]
+    },
+    {
+      "etap": "Wykonanie budżetu",
+      "termin": "rok kalendarzowy; MF publikuje szacunki miesięczne",
+      "src": [
+        "mf_wyk_2026_08"
+      ]
+    },
+    {
+      "etap": "Sprawozdanie z wykonania",
+      "termin": "Rząd przedstawia Sejmowi w ciągu 5 miesięcy od końca roku",
+      "podstawa": "Konstytucja art. 226",
+      "przyklad_2025": "Sprawozdanie za 2025 r. – 31.05.2026",
+      "src": [
+        "konstytucja",
+        "mf_spr_2025"
+      ]
+    },
+    {
+      "etap": "Analiza NIK i absolutorium",
+      "termin": "NIK przedstawia analizę; Sejm decyduje o absolutorium",
+      "przyklad_2025": "Prezes NIK przedstawił analizę za 2025 r. 30.07.2026",
+      "src": [
+        "nik_2025",
+        "konstytucja"
+      ]
+    }
+  ],
+  "psychologia_liczb": [
+    {
+      "zjawisko": "Kategorie „tysiąc – milion – miliard”",
+      "teza": "Ludzie często traktują słowa-skale jak kategorie, a nie liczby: przy zaznaczaniu na osi 1 tys.–1 mld część osób umieszcza milion blisko środka, zamiast przy samym początku osi.",
+      "zrodla": [
+        {
+          "cytat": "Landy, D., Silbert, N., & Goldin, A. (2013). Estimating large numbers. Cognitive Science, 37(5), 775–799.",
+          "doi": "10.1111/cogs.12028"
+        },
+        {
+          "cytat": "Landy, D., Charlesworth, A., & Ottmar, E. (2017). Categories of large numbers in line estimation. Cognitive Science, 41(2), 326–353.",
+          "doi": "10.1111/cogs.12342"
+        },
+        {
+          "cytat": "Resnick, I., Newcombe, N. S., & Shipley, T. F. (2017). Dealing with big numbers: Representation and understanding of magnitudes outside of human experience. Cognitive Science, 41(4), 1020–1041.",
+          "doi": "10.1111/cogs.12388"
+        }
+      ],
+      "zastosowanie_na_stronie": "Wizualizacje proporcjonalne (kwadraty/paski w jednej skali), unikanie zestawiania mln i mld bez przeliczenia."
+    },
+    {
+      "zjawisko": "Zdania perspektywiczne",
+      "teza": "Dodanie porównania („to ok. X zł na osobę”) poprawia zapamiętanie liczby, szacowanie i wykrywanie błędów w tekstach prasowych (3 eksperymenty, >3200 osób).",
+      "zrodla": [
+        {
+          "cytat": "Barrio, P. J., Goldstein, D. G., & Hofman, J. M. (2016). Improving comprehension of numbers in the news. Proceedings of the 2016 CHI Conference on Human Factors in Computing Systems. ACM.",
+          "doi": "10.1145/2858036.2858510"
+        }
+      ],
+      "zastosowanie_na_stronie": "Przy każdej dużej kwocie przeliczenie na osobę / na dzień / jako % budżetu."
+    },
+    {
+      "zjawisko": "Niewrażliwość na skalę (scope insensitivity)",
+      "teza": "Deklarowana gotowość do zapłaty za ochronę 2 000, 20 000 i 200 000 ptaków była niemal taka sama – emocjonalna reakcja nie rośnie z liczbą.",
+      "zrodla": [
+        {
+          "cytat": "Desvousges, W. H., et al. (1993). Measuring natural resource damages with contingent valuation. W: J. A. Hausman (red.), Contingent Valuation: A Critical Assessment (s. 91–164). North-Holland."
+        },
+        {
+          "cytat": "Kahneman, D., Ritov, I., & Schkade, D. (1999). Economic preferences or attitude expressions? Journal of Risk and Uncertainty, 19, 203–235.",
+          "doi": "10.1023/A:1007835629236"
+        }
+      ],
+      "zastosowanie_na_stronie": "Quiz: pytanie o różnicę między 10 a 100 mld zł; sekcja „Koszt obietnic”."
+    },
+    {
+      "zjawisko": "Efekt ramowania (framing)",
+      "teza": "Te same dane podane w innej ramie (zysk/strata, suma/na osobę) prowadzą do innych decyzji.",
+      "zrodla": [
+        {
+          "cytat": "Tversky, A., & Kahneman, D. (1981). The framing of decisions and the psychology of choice. Science, 211(4481), 453–458.",
+          "doi": "10.1126/science.7455683"
+        }
+      ],
+      "zastosowanie_na_stronie": "Pokazujemy zawsze dwie ramy naraz (np. 60,8 mld zł i ok. 1 630 zł na mieszkańca)."
+    },
+    {
+      "zjawisko": "Zakotwiczenie",
+      "teza": "Przypadkowa liczba podana przed oceną przesuwa szacunek w jej stronę.",
+      "zrodla": [
+        {
+          "cytat": "Tversky, A., & Kahneman, D. (1974). Judgment under uncertainty: Heuristics and biases. Science, 185(4157), 1124–1131.",
+          "doi": "10.1126/science.185.4157.1124"
+        }
+      ],
+      "zastosowanie_na_stronie": "Quiz nie podaje przykładowych wartości przed odpowiedzią; opcjonalny wariant z kotwicą do demonstracji efektu."
+    },
+    {
+      "zjawisko": "Fałszywa precyzja",
+      "teza": "Precyzyjna kotwica (np. 19 873 zł zamiast 20 000 zł) powoduje mniejszą korektę – precyzja sugeruje wiedzę.",
+      "zrodla": [
+        {
+          "cytat": "Janiszewski, C., & Uy, D. (2008). Precision of the anchor influences the amount of adjustment. Psychological Science, 19(2), 121–127.",
+          "doi": "10.1111/j.1467-9280.2008.02057.x"
+        }
+      ],
+      "zastosowanie_na_stronie": "Na stronie zaokrąglamy do 0,1 mld zł (w danych trzymamy dokładność do 1 mln zł) i oznaczamy szacunki."
+    },
+    {
+      "zjawisko": "Zniekształcona mapa budżetu",
+      "teza": "Amerykanie przeciętnie sądzą, że pomoc zagraniczna to ok. 26% budżetu federalnego, choć to ok. 1%; tylko 11% szacuje poprawnie.",
+      "src": [
+        "kff_2025"
+      ],
+      "zrodla": [
+        {
+          "cytat": "KFF (2025). KFF Health Tracking Poll, luty 2025.",
+          "url": "https://www.kff.org/global-health-policy/kff-health-tracking-poll-february-2025-the-publics-views-on-global-health-and-usaid/"
+        }
+      ],
+      "zastosowanie_na_stronie": "Uzasadnienie quizu: porównanie szacunku użytkownika z rzeczywistą strukturą wydatków."
+    }
+  ],
+  "sejm": {
+    "opis": "Kluby i koła poselskie Sejmu X kadencji – do modułu „Koszt obietnic” (wybory 2027)",
+    "stan_na": "2026-09-25",
+    "src": [
+      "sejm_api"
+    ],
+    "kluby": [
+      {
+        "id": "KO",
+        "nazwa": "Koalicja Obywatelska – PO, Nowoczesna, Inicjatywa Polska, Zieloni",
+        "typ": "klub",
+        "poslowie": 156
+      },
+      {
+        "id": "PiS",
+        "nazwa": "Prawo i Sprawiedliwość",
+        "typ": "klub",
+        "poslowie": 147
+      },
+      {
+        "id": "RozwojPlus",
+        "nazwa": "Rozwój Plus",
+        "typ": "klub",
+        "poslowie": 40
+      },
+      {
+        "id": "PSL-TD",
+        "nazwa": "Polskie Stronnictwo Ludowe – Trzecia Droga",
+        "typ": "klub",
+        "poslowie": 32
+      },
+      {
+        "id": "Lewica",
+        "nazwa": "Koalicyjny Klub Parlamentarny Lewicy (Nowa Lewica, PPS, Unia Pracy)",
+        "typ": "klub",
+        "poslowie": 21
+      },
+      {
+        "id": "Konfederacja",
+        "nazwa": "Konfederacja",
+        "typ": "klub",
+        "poslowie": 16
+      },
+      {
+        "id": "Centrum",
+        "nazwa": "Centrum",
+        "typ": "klub",
+        "poslowie": 15
+      },
+      {
+        "id": "Polska2050",
+        "nazwa": "Polska 2050",
+        "typ": "klub",
+        "poslowie": 15
+      },
+      {
+        "id": "Demokracja",
+        "nazwa": "Demokracja Bezpośrednia",
+        "typ": "koło",
+        "poslowie": 4
+      },
+      {
+        "id": "Razem",
+        "nazwa": "Razem",
+        "typ": "koło",
+        "poslowie": 4
+      },
+      {
+        "id": "Konfederacja_KP",
+        "nazwa": "Konfederacja Korony Polskiej",
+        "typ": "koło",
+        "poslowie": 3
+      },
+      {
+        "id": "niez.",
+        "nazwa": "Posłowie niezrzeszeni",
+        "typ": "—",
+        "poslowie": 7
+      }
+    ],
+    "uwaga": "Skład się zmienia – aktualizować z API Sejmu przed publikacją modułu."
+  },
+  "do_uzupelnienia": [
+    "Płyn do e-papierosów: stawka akcyzy 2026 (rozbieżne źródła 0,55 vs 0,96 zł/ml) – sprawdzić w ustawie o podatku akcyzowym",
+    "Koszyk GUS 2025: dokładne udziały z tablic XLSX (obecnie odczyt z wykresu)",
+    "Obronność 2026: oficjalna kwota FWSZ (obecnie wyliczona 73,4 mld zł jako różnica)",
+    "PIT 2027: pełne parametry projektu ustawy (kwota wolna, kwota zmniejszająca) – po publikacji projektu",
+    "Deficyt GG 2026 – potwierdzić w dokumentach MF (obecnie 7,1% za mediami)",
+    "Obietnice wyborcze klubów (etap 4) – po publikacji programów na wybory 2027"
+  ]
+}
