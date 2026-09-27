@@ -120,6 +120,7 @@
       <nav class="main-nav" aria-label="Nawigacja główna">
         <a href="index.html">Start</a>
         <a href="kalkulator.html">Twoje podatki</a>
+        <a href="obietnice.html">Obietnice</a>
         <a href="dochody.html">Dochody</a>
         <a href="wydatki.html" aria-current="page">Wydatki</a>
         <a href="dlug.html">Deficyt i dług</a>
@@ -141,8 +142,8 @@
     <section class="hero hero--page container">
       <p class="eyebrow">Wydatki budżetu państwa</p>
       <h1 class="hero__title">Na co idą pieniądze</h1>
-      <p class="hero__lead">Wydatki według działów klasyfikacji budżetowej, najważniejsze pozycje projektu 2027
-        i pieniądze wydawane obok budżetu — przez fundusze w BGK i NFZ.</p>
+      <p class="hero__lead">Wydatki według działów klasyfikacji budżetowej, najważniejsze pozycje projektu 2027,
+        pieniądze wydawane obok budżetu — przez fundusze w BGK i NFZ — oraz wydatki związane z Kościołami i konkordatem.</p>
       <p class="small muted">Liczby z <span style="text-decoration:underline dotted">kropkowanym podkreśleniem</span> pokazują źródło po najechaniu, fokusie lub dotknięciu. Kreskowane = wartość wyliczona, pomarańczowa kropka = do weryfikacji.</p>
     </section>
 
@@ -184,6 +185,15 @@
           <p class="muted small">Budżet państwa, samorządy, ZUS, NFZ i fundusze celowe razem — według funkcji (dane NIK).</p>
           <div id="chart-sector"></div>
           <p class="small muted" id="sector-total"></p>
+        </article>
+
+        <article class="glass-card bento-item bento-item--full" id="kosciol">
+          <h2>Kościoły, związki wyznaniowe i konkordat</h2>
+          <p class="muted small" id="kosciol-lead"></p>
+          <h3 class="kpi__label">Fundusz Kościelny — jedyna osobna pozycja w ustawie budżetowej</h3>
+          <div id="kosciol-fk"></div>
+          <div id="table-kosciol"></div>
+          <p class="callout small" id="kosciol-note"></p>
         </article>
 
         <article class="glass-card bento-item bento-item--full">

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Metodologia — Budżet Polski 2025–2027</title>
-  <meta name="description" content="Metodologia i zastrzeżenia: skąd pochodzą dane o budżecie Polski i jak je czytać.">
+  <title>Obietnice — Budżet Polski 2025–2027</title>
+  <meta name="description" content="Kalkulator obietnic wyborczych: ile kosztuje budżet obniżka podatku, nowe świadczenie albo wyższe wydatki, ile zyskasz Ty i jaka część kosztu przypada na Ciebie.">
   <meta name="color-scheme" content="light dark">
 
   <!-- ============================================================
@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="assets/style.css">
   <script src="assets/app.js" defer></script>
 </head>
-<body data-page="metodologia">
+<body data-page="obietnice">
 
   <a class="skip-link" href="#tresc">Przejdź do treści</a>
 
@@ -120,12 +120,12 @@
       <nav class="main-nav" aria-label="Nawigacja główna">
         <a href="index.html">Start</a>
         <a href="kalkulator.html">Twoje podatki</a>
-        <a href="obietnice.html">Obietnice</a>
+        <a href="obietnice.html" aria-current="page">Obietnice</a>
         <a href="dochody.html">Dochody</a>
         <a href="wydatki.html">Wydatki</a>
         <a href="dlug.html">Deficyt i dług</a>
         <a href="slowniczek.html">Słowniczek</a>
-        <a href="metodologia.html" aria-current="page">Metodologia</a>
+        <a href="metodologia.html">Metodologia</a>
         <a href="zrodla.html">Źródła</a>
       </nav>
 
@@ -140,57 +140,112 @@
     <p class="container data-status" id="data-status" role="status">Wczytywanie danych…</p>
 
     <section class="hero hero--page container">
-      <p class="eyebrow">Metodologia i zastrzeżenia</p>
-      <h1 class="hero__title">Skąd te liczby i czego nie pokazują</h1>
-      <p class="hero__lead">Dla dziennikarzy i wszystkich, którzy chcą cytować dane z tej strony.</p>
+      <p class="eyebrow">Kalkulator obietnic wyborczych · liczy się w Twojej przeglądarce, nic nie jest wysyłane</p>
+      <h1 class="hero__title">Ile kosztują obietnice wyborcze</h1>
+      <p class="hero__lead">Wybierz zapowiedź partii albo polityka, zmień jej parametry i wpisz swoje zarobki.
+        Zobaczysz, ile kosztuje budżet, ile zyskasz Ty i jaka część rachunku przypada na Ciebie.</p>
+      <p class="small muted">Liczby z <span style="text-decoration:underline dotted">kropkowanym podkreśleniem</span> pokazują źródło po najechaniu, fokusie lub dotknięciu. Kreskowane = wartość wyliczona, pomarańczowa kropka = do weryfikacji.</p>
     </section>
 
-    <section class="about container">
-      <div class="glass-card about__card prose">
-        <h2>Stan danych</h2>
-        <p id="meta-state"></p>
+    <section class="bento container">
+      <div class="bento-grid">
 
-        <h2>Co porównujemy</h2>
-        <ul class="list-tight">
-          <li><strong>2025 — wykonanie</strong>: Sprawozdanie z wykonania budżetu państwa za 2025 r. (MF, 31.05.2026). Plan 2025 = ustawa budżetowa na 2025 r.</li>
-          <li><strong>2026 — ustawa</strong>: Ustawa budżetowa na rok 2026 z 9.01.2026 (Dz.U. 2026 poz. 62) z załącznikami. Dodatkowo przewidywane wykonanie z uzasadnienia projektu 2027 i szacunek MF po sierpniu.</li>
-          <li><strong>2027 — projekt</strong>: projekt ustawy budżetowej przyjęty przez Radę Ministrów 28.08.2026, z uzasadnieniem. Liczby zmienią się w trakcie prac w Sejmie.</li>
-        </ul>
+        <!-- WYBÓR OBIETNICY -->
+        <article class="glass-card bento-item bento-item--wide">
+          <h2>Obietnica</h2>
+          <form id="ob-form" class="calc-form" novalidate>
+            <label class="field">
+              <span class="field__label">Wybierz z listy</span>
+              <select id="ob-select" name="ob"></select>
+            </label>
+            <div class="ob-meta" id="ob-meta"></div>
+            <div class="ob-params" id="ob-params"></div>
+            <div id="ob-est"></div>
+          </form>
+        </article>
 
-        <h2>Najważniejsze zastrzeżenia</h2>
-        <ul class="list-tight">
-          <li><strong>Budżet państwa ≠ finanse publiczne.</strong> Budżet nie obejmuje samorządów, ZUS, NFZ ani funduszy w BGK. Kwot z różnych definicji nie sumujemy.</li>
-          <li><strong>Ceny bieżące.</strong> Wszystkie kwoty są nominalne (bez korekty o inflację). Porównania między latami najlepiej robić w relacji do PKB.</li>
-          <li><strong>Plan a wykonanie.</strong> Porównując 2025 z 2026–2027, zestawiamy wykonanie z planami. Wydatki zwykle są wykonywane w 94–97%.</li>
-          <li><strong>Działy klasyfikacji.</strong> W trakcie roku rezerwy z działu 758 „Różne rozliczenia” są rozdzielane do innych działów, dlatego wykonanie działów różni się od planu.</li>
-          <li><strong>Projekty podatkowe.</strong> Dochody 2027 zakładają zmiany podatkowe, które są dopiero projektami ustaw.</li>
-          <li><strong>Wydatki związane z Kościołami.</strong> W ustawie budżetowej osobno widać tylko Fundusz Kościelny. Koszt lekcji religii, uczelni kościelnych i kapelanów jest rozproszony w budżetach ministerstw i samorządów — podajemy ostatnie dostępne kwoty z odpowiedzi ministerstw i analiz, z różnych lat, jako rząd wielkości.</li>
-          <li><strong>Relacje do PKB.</strong> Liczymy je z PKB nominalnego z założeń makroekonomicznych MF; Eurostat używa własnych danych, więc wyniki mogą się różnić o 0,1–0,3 pkt proc.</li>
-        </ul>
+        <!-- DANE OSOBY -->
+        <article class="glass-card bento-item">
+          <h2>Ty</h2>
+          <form id="ob-person" class="calc-form" novalidate>
+            <fieldset class="choice">
+              <legend>Źródło dochodu</legend>
+              <label><input type="radio" name="typ" value="uop" checked> Umowa o pracę</label>
+              <label><input type="radio" name="typ" value="emeryt"> Emerytura / renta</label>
+            </fieldset>
+            <fieldset class="choice">
+              <legend>Wpisuję kwotę</legend>
+              <label><input type="radio" name="tryb" value="brutto" checked> brutto</label>
+              <label><input type="radio" name="tryb" value="netto"> netto (na rękę)</label>
+            </fieldset>
+            <label class="field">
+              <span class="field__label">Kwota miesięcznie (zł)</span>
+              <input type="number" id="ob-kwota" name="kwota" inputmode="decimal" min="0" max="1000000" step="1" value="9473">
+              <span class="field__hint" id="ob-kwota-hint">Domyślnie: prognoza przeciętnego wynagrodzenia brutto na 2026 r.</span>
+            </label>
+            <label class="field">
+              <span class="field__label">Dzieci do 18 lat</span>
+              <input type="number" id="ob-dzieci" name="dzieci" inputmode="numeric" min="0" max="15" step="1" value="0">
+            </label>
+          </form>
+        </article>
 
-        <h2>Jak czytać liczby</h2>
-        <ul class="list-tight">
-          <li>Kropkowane podkreślenie — liczba prosto ze źródła; po najechaniu, fokusie lub dotknięciu widać dokument źródłowy.</li>
-          <li>Kreskowane podkreślenie — wartość wyliczona (np. suma, przeliczenie na mieszkańca); wzór jest w dymku.</li>
-          <li>Pomarańczowa kropka — wartość do weryfikacji (sprzeczne źródła lub brak oficjalnego dokumentu).</li>
-          <li>W danych kwoty są zapisane z dokładnością do 1 mln zł; na stronie zaokrąglamy do 0,1 mld zł, żeby nie sugerować fałszywej precyzji.</li>
-        </ul>
-        <p id="pop"></p>
+        <!-- WYNIK -->
+        <article class="glass-card bento-item bento-item--full" aria-live="polite">
+          <div class="ob-result-head">
+            <h2 id="ob-result-title">Wynik rocznie</h2>
+            <div class="seg" id="ob-fin" role="group" aria-label="Jak rozłożyć koszt">
+              <button type="button" data-value="podatki" aria-pressed="true">Koszt wg Twoich podatków</button>
+              <button type="button" data-value="rowno" aria-pressed="false">Koszt po równo na mieszkańca</button>
+            </div>
+          </div>
+          <div class="ob-result">
+            <section class="ob-panel" aria-labelledby="ob-h-budzet">
+              <h3 id="ob-h-budzet" class="kpi__label">Budżet państwa</h3>
+              <div id="ob-budget"></div>
+            </section>
+            <section class="ob-panel ob-panel--you" aria-labelledby="ob-h-ty">
+              <h3 id="ob-h-ty" class="kpi__label">Ty</h3>
+              <div id="ob-you"></div>
+            </section>
+          </div>
+          <p class="callout small" id="ob-perspective"></p>
+        </article>
 
-        <h2>Kalkulator obietnic</h2>
-        <ul class="list-tight">
-          <li><strong>Koszt dla budżetu</strong> pochodzi z publicznych szacunków (Ministerstwo Finansów, CenEA, FOR, Kancelaria Prezydenta, wyliczenia redakcji). Gdy jest ich kilka, można wybrać, który pokazać. Domyślnie pokazujemy niezależny ośrodek analityczny, a gdy go brak — MF albo wyliczenie z danych budżetu.</li>
-          <li><strong>Zmiana parametru</strong> (kwota wolna, próg, stawka) przeskalowuje szacunek prostym wzorem: kwota wolna i stawka VAT — liniowo, próg PIT — logarytmicznie (ln(próg / 120 tys.)), co zgadza się z szacunkami dla 140 i 180 tys. zł. To przybliżenie, nie mikrosymulacja na danych podatników.</li>
-          <li><strong>Twój zysk bezpośredni</strong> liczymy tym samym modelem co kalkulator „Twoje podatki” (zasady PIT z 2026 r., umowa o pracę lub emerytura). Przy VAT zakładamy, że obniżka w całości trafia do cen.</li>
-          <li><strong>Twoja część kosztu</strong>: albo równo na każdego mieszkańca, albo proporcjonalnie do podatków, które płacisz do budżetu państwa (VAT i akcyza z typowego koszyka + część PIT). W rzeczywistości koszt może zostać pokryty długiem — wtedy spłacają go przyszli podatnicy razem z odsetkami.</li>
-          <li><strong>Nie sumuj obietnic bezkrytycznie.</strong> Zmiany w PIT wpływają na siebie nawzajem (np. przy zerowym PIT dla rodzin wyższy próg kosztuje mniej), dlatego suma w zestawieniu to górne przybliżenie.</li>
-        </ul>
+        <!-- DRABINKA ZAROBKÓW -->
+        <article class="glass-card bento-item bento-item--full">
+          <h2>Kto zyskuje, a kto dopłaca — według zarobków</h2>
+          <p class="muted small" id="ob-ladder-lead"></p>
+          <div id="ob-ladder"></div>
+        </article>
 
-        <h2>Znane luki</h2>
-        <div id="todo"></div>
+        <!-- ZESTAWIENIE -->
+        <article class="glass-card bento-item bento-item--full">
+          <h2>Wszystkie obietnice w jednej tabeli</h2>
+          <label class="field field--inline">
+            <span class="field__label">Pokaż</span>
+            <select id="ob-filter"></select>
+          </label>
+          <div id="ob-table"></div>
+          <p class="small muted" id="ob-table-note"></p>
+        </article>
 
-        <h2>Aktualizacja i licencja</h2>
-        <p>Wszystkie liczby są w jednym pliku <a href="data/budzet.json">data/budzet.json</a> — każda z polem <code>src</code> wskazującym źródło. Dane aktualizowane są po publikacji projektu budżetu (wrzesień) i sprawozdania z wykonania (maj). Kod na licencji Apache 2.0.</p>
+        <article class="glass-card bento-item bento-item--wide">
+          <h2>Zapowiedzi bez wyceny</h2>
+          <p class="muted small">Tych nie da się dziś uczciwie przeliczyć na złotówki — brak szczegółów albo brak jakiegokolwiek szacunku.</p>
+          <div id="ob-unpriced"></div>
+        </article>
+
+        <article class="glass-card bento-item">
+          <h2>Jak czytać wynik</h2>
+          <ul class="list-tight small">
+            <li><strong>Zysk bezpośredni</strong> — o ile wzrośnie Twoje netto albo spadną Twoje wydatki.</li>
+            <li><strong>Twoja część kosztu</strong> — ile z kosztu obietnicy przypada na Ciebie, jeśli budżet musiałby go pokryć z podatków.</li>
+            <li><strong>Bilans</strong> — różnica. Dodatni: na obietnicy zyskujesz, nawet gdy za nią zapłacisz.</li>
+            <li>Szacunki kosztów się różnią — przy każdej obietnicy możesz wybrać źródło. Szczegóły w <a href="metodologia.html">metodologii</a>.</li>
+          </ul>
+        </article>
+
       </div>
     </section>
 

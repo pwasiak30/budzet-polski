@@ -378,6 +378,189 @@
   /* ----------------------------------------------------------
      5. RENDERERY PODSTRON
   ---------------------------------------------------------- */
+  /* ----------------------------------------------------------
+     4a. WSPÓLNE OBLICZENIA PŁACOWE
+     Używa ich kalkulator „Twoje podatki” i kalkulator obietnic.
+     Liczymy rocznie; parametry z budzet.json → parametry_podatkowe.
+       TAX.pitTax(podstawa, rules)   — PIT ze skali
+       TAX.rules(o)                  — skala 2026 / 2027 albo o.rules
+       TAX.uop(bruttoMies, o)        — umowa o pracę
+       TAX.emeryt(bruttoMies, o)     — emerytura / renta
+       TAX.fromNetto(netto, calc, o) — netto → brutto
+       TAX.autoIndirect(netto)       — VAT/akcyza z koszyka „jak GUS”
+     o: {rok, kup300, mlody, rules?, zwolnienie?}
+       rules      — własna skala {progi: [[do, stawka]...], kz: kwota zmniejszająca rocznie}
+       zwolnienie — roczny limit przychodu zwolnionego z PIT (np. ulga dla rodziców)
+  ---------------------------------------------------------- */
+  var TAX = (function () {
+    function P26() { return D.parametry_podatkowe['2026']; }
+
+    function rules(o) {
+      if (o && o.rules) return o.rules;
+      var p = P26().pit;
+      if (o && o.rok === '2027') {
+        // projekt 2027: 12% do 130 tys., 24% 130–150 tys., 32% powyżej; kwota zmniejszająca jak w 2026
+        return { progi: [[130000, 0.12], [150000, 0.24], [Infinity, 0.32]], kz: p.kwota_zmniejszajaca_mies * 12 };
+      }
+      return { progi: [[p.prog_roczny, p.stawka_1], [Infinity, p.stawka_2]], kz: p.kwota_zmniejszajaca_mies * 12 };
+    }
+
+    function pitTax(podstawa, r) {
+      var p = Math.max(0, Math.round(podstawa)), t = 0, prev = 0;
+      for (var i = 0; i < r.progi.length; i++) {
+        var lim = r.progi[i][0];
+        if (p > prev) t += r.progi[i][1] * (Math.min(p, lim) - prev);
+        prev = lim;
+        if (p <= lim) break;
+      }
+      return Math.max(0, Math.round(t - r.kz));
+    }
+
+    function exemptLimit(o) {
+      var lim = o.mlody ? P26().ulga_dla_mlodych_limit.v : 0;
+      return Math.max(lim, o.zwolnienie || 0);
+    }
+
+    /* Umowa o pracę: roczne kwoty z brutto miesięcznego */
+    function uop(bruttoMies, o) {
+      var P = P26();
+      var B = bruttoMies * 12;
+      var z = P.zus_pracownik, zp = P.zus_pracodawca;
+      var baseLim = Math.min(B, z.limit_30_krotnosci_roczny);   // emerytalna i rentowa do limitu 30-krotności
+      var r = {};
+      r.brutto = B;
+      r.emerytalna = z.emerytalna * baseLim;
+      r.rentowa = z.rentowa * baseLim;
+      r.chorobowa = z.chorobowa * B;
+      r.zus = r.emerytalna + r.rentowa + r.chorobowa;
+      r.zdrowotna = P.zdrowotna.stawka * (B - r.zus);
+      var exempt = Math.min(B, exemptLimit(o));
+      var taxableRev = B - exempt;
+      var kup = taxableRev > 0 ? (o.kup300 ? P.pit.koszty_uzyskania_mies.podwyzszone : P.pit.koszty_uzyskania_mies.podstawowe) * 12 : 0;
+      var zusTaxable = B > 0 ? r.zus * taxableRev / B : 0;       // składki od przychodu zwolnionego nie pomniejszają dochodu
+      r.podstawa = Math.max(0, taxableRev - zusTaxable - kup);
+      r.pit = pitTax(r.podstawa, rules(o));
+      r.netto = B - r.zus - r.zdrowotna - r.pit;
+      // składki pracodawcy (koszt pracy ponad brutto)
+      r.pr_emerytalna = zp.emerytalna * baseLim;
+      r.pr_rentowa = zp.rentowa * baseLim;
+      r.pr_wypadkowa = zp.wypadkowa_typowa * B;
+      r.pr_fp = zp.fp_i_fs * B;
+      r.pr_fgsp = zp.fgsp * B;
+      r.pracodawca = r.pr_emerytalna + r.pr_rentowa + r.pr_wypadkowa + r.pr_fp + r.pr_fgsp;
+      r.kosztPracy = B + r.pracodawca;
+      return r;
+    }
+
+    /* Emerytura: zdrowotna 9% od brutto, PIT bez kosztów uzyskania */
+    function emeryt(bruttoMies, o) {
+      var P = P26();
+      var B = bruttoMies * 12;
+      var r = { brutto: B, emerytalna: 0, rentowa: 0, chorobowa: 0, zus: 0, pracodawca: 0,
+                pr_emerytalna: 0, pr_rentowa: 0, pr_wypadkowa: 0, pr_fp: 0, pr_fgsp: 0 };
+      r.zdrowotna = P.zdrowotna.stawka * B;
+      r.podstawa = Math.max(0, B - Math.min(B, o.zwolnienie || 0));
+      r.pit = pitTax(r.podstawa, rules(o));
+      r.netto = B - r.zdrowotna - r.pit;
+      r.kosztPracy = B;
+      return r;
+    }
+
+    /* Netto → brutto: szukanie połówkowe (funkcja netto(brutto) jest rosnąca) */
+    function fromNetto(nettoMies, calc, o) {
+      var lo = 0, hi = Math.max(1000, nettoMies * 3);
+      for (var i = 0; i < 60; i++) {
+        var mid = (lo + hi) / 2;
+        if (calc(mid, o).netto / 12 < nettoMies) lo = mid; else hi = mid;
+      }
+      return (lo + hi) / 2;
+    }
+
+    /* Koszyk wydatków — udziały zbliżone do struktury wydatków gospodarstw domowych GUS */
+    var EXP = [
+      { key: 'jedzenie', label: 'Jedzenie i napoje bezalkoholowe', share: 0.25, note: 'VAT 5%' },
+      { key: 'paliwo', label: 'Paliwo (benzyna)', share: 0.06, note: 'VAT 23% + akcyza + opłata paliwowa' },
+      { key: 'energia', label: 'Prąd i gaz', share: 0.07, note: 'VAT 23% (akcyza na prąd pominięta — ok. 0,5% ceny)' },
+      { key: 'papierosy', label: 'Papierosy', share: 0, note: 'VAT 23% + akcyza kwotowa i procentowa' },
+      { key: 'epapierosy', label: 'E-papierosy i liquidy', share: 0, note: 'tylko VAT 23% — akcyza do weryfikacji' },
+      { key: 'alkohol', label: 'Alkohol', share: 0, note: 'tylko VAT 23% — akcyza pominięta' },
+      { key: 'vat23', label: 'Pozostałe zakupy (ubrania, elektronika, chemia, telefon, internet)', share: 0.22, note: 'VAT 23%' },
+      { key: 'vat8', label: 'Usługi z VAT 8% (restauracje, bilety, hotele, woda)', share: 0.08, note: 'VAT 8%' },
+      { key: 'bezvat', label: 'Bez VAT (czynsz, najem, raty, leczenie, oszczędności)', share: 0.32, note: 'bez podatków pośrednich' }
+    ];
+
+    /* VAT, akcyza i opłata paliwowa z koszyka wypełnionego udziałami EXP (miesięcznie) */
+    function autoIndirect(nettoMies) {
+      var PP = D.parametry_podatkowe, AK = PP.akcyza_2026, OP = PP.oplata_paliwowa_2026;
+      var v = {}; EXP.forEach(function (e) { v[e.key] = nettoMies * e.share; });
+      var vat23 = function (x) { return x * 23 / 123; };
+      var litry = v.paliwo / PP.ceny_referencyjne.benzyna_95_zl_l.v;
+      var r = {};
+      r.vat = v.jedzenie * 5 / 105 + vat23(v.paliwo + v.energia + v.vat23) + v.vat8 * 8 / 108;
+      r.akcyza = litry * AK.benzyna_zl_1000l / 1000;
+      r.oplata = litry * OP.benzyna_zl_1000l / 1000;
+      r.spend23 = v.paliwo + v.energia + v.vat23;   // wydatki z VAT 23%
+      return r;
+    }
+
+    return { rules: rules, pitTax: pitTax, uop: uop, emeryt: emeryt, fromNetto: fromNetto, EXP: EXP, autoIndirect: autoIndirect };
+  })();
+
+  /* ----------------------------------------------------------
+     4b. SKUTEK OBIETNICY DLA BUDŻETU (mld zł rocznie)
+     Jedno źródło wzorów dla kalkulatora obietnic i strony głównej.
+     OB_BUDGET[model](obietnica, parametry, szacunek) → {v, src, wyliczone?, uwaga?}
+     Parametr różny od tego w szacunku („przy”) → przeskalowanie:
+       kwota wolna i VAT — liniowo, próg PIT — ln(próg / 120 tys.).
+  ---------------------------------------------------------- */
+  var OB_BUDGET = (function () {
+    function zlf(v) { return fmt(Math.round(v), 0) + ' zł'; }
+    function fromEst(e, v, wyl) {
+      var extra = { uwaga: e.kto + (e.uwaga ? ' — ' + e.uwaga : '') };
+      if (e.weryfikuj) extra.weryfikuj = e.weryfikuj;
+      return mk(v, e.src, Object.assign(extra, wyl ? { wyliczone: wyl } : {}));
+    }
+    function fixed(pr, prm, e) { return fromEst(e, e.v); }
+    return {
+      pit_kwota: function (pr, prm, e) {
+        var K = prm.kwota_wolna;
+        var v = e.v * (K - 30000) / (e.przy - 30000);
+        return fromEst(e, v, K === e.przy ? null : 'szacunek ' + fmt(e.v) + ' mld zł dla ' + zlf(e.przy) + ' przeskalowany liniowo do ' + zlf(K) + ' (koszt ∝ kwota wolna − 30 000 zł) — przybliżenie');
+      },
+      pit_prog: function (pr, prm, e) {
+        var T = Math.max(120000, prm.prog);
+        var v = e.v * Math.log(T / 120000) / Math.log(e.przy / 120000);
+        return fromEst(e, v, T === e.przy ? null : 'szacunek ' + fmt(e.v) + ' mld zł dla progu ' + zlf(e.przy) + ' przeskalowany do ' + zlf(T) + ' wzorem ln(próg / 120 tys.) — przybliżenie');
+      },
+      vat_stawka: function (pr, prm, e) {
+        var s = prm.stawka;
+        var v = e.v * (23 - s) / (23 - e.przy);
+        return fromEst(e, v, s === e.przy ? null : 'szacunek ' + fmt(e.v) + ' mld zł za 1 pkt proc. × (23 − ' + s + ') — przybliżenie liniowe');
+      },
+      pit_liniowy: fixed, pit_rodzina: fixed, pit_2027: fixed, vat_prad: fixed, belka: fixed,
+      // cięcie wydatku: szacunek to kwota wydatku (dodatnia), skutek dla budżetu = −kwota
+      oszczednosc: function (pr, prm, e) { return fromEst(e, -e.v, 'likwidacja wydatku ' + fmt(e.v * 1000, 0) + ' mln zł = oszczędność budżetu'); },
+      obszar_pkb: function (pr, prm) {
+        var teraz = get(D, pr.obszar.teraz), pkb = get(D, pr.obszar.pkb);
+        var v = prm.proc / 100 * pkb.v - teraz.v;
+        return mk(v, teraz.src.concat(pkb.src), { wyliczone: fmt(prm.proc, 1) + '% × ' + pr.obszar.pkb_opis + ' (' + fmt(pkb.v) + ' mld zł) − plan na 2027 r. (' + fmt(teraz.v) + ' mld zł, czyli ' + fmt(teraz.v / pkb.v * 100, 2) + '% PKB)' });
+      },
+      swiadczenie_800: function (pr, prm) {
+        var P800 = D.programy_spoleczne.rodzina_800_plus['2027'];
+        return mk(P800.v * (prm.kwota - 800) / 800, P800.src, { wyliczone: 'koszt programu w 2027 r. (' + fmt(P800.v) + ' mld zł) × (' + prm.kwota + ' − 800) / 800' });
+      },
+      wlasna: function (pr, prm) {
+        var v = prm.tryb === 'mld' ? prm.mld : prm.zl * 12 * prm.osoby * 1000 / 1e9;
+        var sign = prm.rodzaj === 'wplyw' ? -1 : 1;
+        return mk(sign * v, [], { wyliczone: prm.tryb === 'mld' ? 'kwota wpisana przez Ciebie' : fmt(prm.zl, 0) + ' zł × 12 × ' + fmt(prm.osoby, 0) + ' tys. osób' });
+      }
+    };
+  })();
+  /* Skutek z parametrami domyślnymi i pierwszym (domyślnym) szacunkiem */
+  function obDefaultBudget(pr) {
+    return OB_BUDGET[pr.model](pr, JSON.parse(JSON.stringify(pr.param || {})), pr.szacunki && pr.szacunki.length ? pr.szacunki[0] : null);
+  }
+
   var L = function (y) { return D.lata[y]; };
 
   var pages = {};
@@ -478,7 +661,22 @@
       '<li>Wydatki budżetu 2027 to ' + num(n.wydatki_2027_na_osobe_zl, { unit: 'zł', dec: 0 }) + ' na każdego mieszkańca Polski.</li>' +
       '<li>Deficyt 2027: ' + num(n.deficyt_2027_na_osobe_zl, { unit: 'zł', dec: 0 }) + ' na osobę — tyle państwo pożyczy w naszym imieniu w jeden rok.</li>' +
       '<li>Odsetki i obsługa długu w 2027 r.: ' + num(n.obsluga_dlugu_2027_dziennie_mln_zl, { unit: 'mln zł', dec: 1 }) + ' dziennie.</li>' +
-      '<li>Program „Rodzina 800+” kosztuje ' + num(n.rodzina800_2027_na_osobe_zl, { unit: 'zł', dec: 0 }) + ' na mieszkańca rocznie.</li></ul>');
+      '<li>Program „Rodzina 800+” kosztuje ' + num(n.rodzina800_2027_na_osobe_zl, { unit: 'zł', dec: 0 }) + ' na mieszkańca rocznie.</li>' +
+      (D.kosciol ? '<li>Fundusz Kościelny 2027: ' + num(mk(D.kosciol.fundusz_koscielny['2027'].v * 1e9 / POP, D.kosciol.fundusz_koscielny['2027'].src.concat(['gus_ludnosc_2025']), { wyliczone: fmt(D.kosciol.fundusz_koscielny['2027'].v * 1000, 2) + ' mln zł / ludność' }), { unit: 'zł', dec: 2 }) +
+        ' na mieszkańca; wszystkie wydatki związane z Kościołami i konkordatem — ok. ' + num(mk(D.kosciol.suma.v * 1e9 / POP, D.kosciol.suma.src, { wyliczone: 'ok. ' + fmt(D.kosciol.suma.v) + ' mld zł / ludność', weryfikuj: D.kosciol.suma.weryfikuj }), { unit: 'zł', dec: 0 }) + ' (<a href="wydatki.html#kosciol">szczegóły</a>).</li>' : '') + '</ul>');
+
+    // Karta kalkulatora obietnic: najdroższe zapowiedzi partii i polityków (parametry domyślne)
+    var promo = document.getElementById('promo-ob');
+    if (promo && D.obietnice) {
+      var OBG = D.obietnice.grupy;
+      var topOb = D.obietnice.lista.filter(function (p) { return p.kto[0] !== 'Scenariusz' && p.kto[0] !== 'Rzad'; })
+        .map(function (p) { return { p: p, b: obDefaultBudget(p) }; })
+        .sort(function (a, b) { return b.b.v - a.b.v; }).slice(0, 4);
+      hbar(promo, {
+        series: [{ name: 'koszt rocznie', cls: 2 }], person: true,
+        rows: topOb.map(function (t) { return { label: t.p.tytul + ' (' + t.p.kto.map(function (k) { return OBG[k] || k; }).join(', ') + ')', values: [t.b] }; })
+      });
+    }
   };
 
   /* ===== DOCHODY ===== */
@@ -617,6 +815,34 @@
     var s = D.sektor_finansow_publicznych_2025;
     hbar(document.getElementById('chart-sector'), { series: [YEAR_SERIES[0]], rows: s.funkcje.map(function (x) { return { label: x.nazwa, values: [x] }; }), person: true });
     set('sector-total', 'Razem ' + num(s.ogolem, { person: true, label: 'Wydatki sektora finansów publicznych 2025' }) + '. ' + esc(s.uwaga));
+
+    // Kościoły, związki wyznaniowe i konkordat
+    var K = D.kosciol;
+    if (K && document.getElementById('table-kosciol')) {
+      set('kosciol-lead', esc(K.opis));
+      var fkYears = Object.keys(K.fundusz_koscielny).sort();
+      hbar(document.getElementById('kosciol-fk'), {
+        series: [{ name: 'Fundusz Kościelny', cls: 2 }], unit: 'mln zł', dec: 1,
+        rows: fkYears.map(function (y) {
+          var v = K.fundusz_koscielny[y];
+          return { label: y + (y === '2027' ? ' — projekt' : y === '2024' || y === '2025' || y === '2026' ? ' — ustawa' : ''), values: [mk(v.v * 1000, v.src, v.uwaga ? { uwaga: v.uwaga } : null)] };
+        })
+      });
+      table(document.getElementById('table-kosciol'), {
+        cols: [{ head: 'Pozycja' }, { head: 'Kto płaci' }, { head: 'Podstawa' }, { head: 'Dane za' }, { head: 'Rocznie', cls: 'n' }, { head: 'Na mieszkańca', cls: 'n' }],
+        rows: K.pozycje.map(function (x) {
+          var mln = Object.assign({}, x.val, { v: x.val.v * 1000 });
+          return ['<strong>' + esc(x.nazwa) + '</strong>' + (x.na_co ? '<br><span class="small muted" style="font-weight:400">' + esc(x.na_co) + '</span>' : ''),
+            esc(x.kto_placi), esc(x.podstawa), esc(x.dane_za),
+            num(mln, { unit: 'mln zł', dec: 0, label: x.nazwa }),
+            fmt(x.val.v * 1e9 / POP, 1) + ' zł'];
+        }),
+        foot: ['Razem (rząd wielkości, dane z różnych lat)', '', '', '', num(Object.assign({}, K.suma, { v: K.suma.v }), { dec: 1, label: 'Razem' }), fmt(K.suma.v * 1e9 / POP, 0) + ' zł']
+      });
+      set('kosciol-note', 'Nie liczymy: ' + esc(K.nie_liczymy.charAt(0).toLowerCase() + K.nie_liczymy.slice(1)) + ' Tekst konkordatu: ' +
+        (K.zrodlo_konkordat || []).map(function (id) { var z = D.zrodla[id]; return z ? '<a href="' + esc(z.url) + '" target="_blank" rel="noopener">' + esc(z.wydawca) + '</a>' : ''; }).join('') +
+        '. Likwidację Funduszu Kościelnego i religię poza szkołą możesz przeliczyć w <a href="obietnice.html#likwidacja_funduszu_koscielnego">kalkulatorze obietnic</a>.');
+    }
   };
 
   /* ===== DEFICYT I DŁUG ===== */
@@ -722,86 +948,7 @@
     var form = document.getElementById('calc-form');
     var kwota = document.getElementById('kwota');
 
-    /* ---------- Skala PIT ---------- */
-    function pitScale(podstawa, rok) {
-      var p = Math.max(0, Math.round(podstawa));
-      var t;
-      if (rok === '2027') {
-        // projekt 2027: 12% do 130 tys., 24% 130–150 tys., 32% powyżej; kwota zmniejszająca jak w 2026
-        t = 0.12 * Math.min(p, 130000) + 0.24 * Math.max(0, Math.min(p, 150000) - 130000) + 0.32 * Math.max(0, p - 150000) - P26.pit.kwota_zmniejszajaca_mies * 12;
-      } else {
-        t = p <= P26.pit.prog_roczny
-          ? P26.pit.stawka_1 * p - P26.pit.kwota_zmniejszajaca_mies * 12
-          : P26.pit.stawka_1 * P26.pit.prog_roczny - P26.pit.kwota_zmniejszajaca_mies * 12 + P26.pit.stawka_2 * (p - P26.pit.prog_roczny);
-      }
-      return Math.max(0, Math.round(t));
-    }
-
-    /* ---------- Umowa o pracę: roczne kwoty z brutto miesięcznego ---------- */
-    function uop(bruttoMies, o) {
-      var B = bruttoMies * 12;
-      var z = P26.zus_pracownik, zp = P26.zus_pracodawca;
-      var baseLim = Math.min(B, z.limit_30_krotnosci_roczny);   // emerytalna i rentowa do limitu 30-krotności
-      var r = {};
-      r.brutto = B;
-      r.emerytalna = z.emerytalna * baseLim;
-      r.rentowa = z.rentowa * baseLim;
-      r.chorobowa = z.chorobowa * B;
-      r.zus = r.emerytalna + r.rentowa + r.chorobowa;
-      r.zdrowotna = P26.zdrowotna.stawka * (B - r.zus);
-      var exempt = o.mlody ? Math.min(B, P26.ulga_dla_mlodych_limit.v) : 0;
-      var taxableRev = B - exempt;
-      var kup = taxableRev > 0 ? (o.kup300 ? P26.pit.koszty_uzyskania_mies.podwyzszone : P26.pit.koszty_uzyskania_mies.podstawowe) * 12 : 0;
-      var zusTaxable = B > 0 ? r.zus * taxableRev / B : 0;       // składki od przychodu zwolnionego nie pomniejszają dochodu
-      r.podstawa = Math.max(0, taxableRev - zusTaxable - kup);
-      r.pit = pitScale(r.podstawa, o.rok);
-      r.netto = B - r.zus - r.zdrowotna - r.pit;
-      // składki pracodawcy (koszt pracy ponad brutto)
-      r.pr_emerytalna = zp.emerytalna * baseLim;
-      r.pr_rentowa = zp.rentowa * baseLim;
-      r.pr_wypadkowa = zp.wypadkowa_typowa * B;
-      r.pr_fp = zp.fp_i_fs * B;
-      r.pr_fgsp = zp.fgsp * B;
-      r.pracodawca = r.pr_emerytalna + r.pr_rentowa + r.pr_wypadkowa + r.pr_fp + r.pr_fgsp;
-      r.kosztPracy = B + r.pracodawca;
-      return r;
-    }
-
-    /* ---------- Emerytura: zdrowotna 9% od brutto, PIT bez kosztów uzyskania ---------- */
-    function emeryt(bruttoMies, o) {
-      var B = bruttoMies * 12;
-      var r = { brutto: B, emerytalna: 0, rentowa: 0, chorobowa: 0, zus: 0, pracodawca: 0,
-                pr_emerytalna: 0, pr_rentowa: 0, pr_wypadkowa: 0, pr_fp: 0, pr_fgsp: 0 };
-      r.zdrowotna = P26.zdrowotna.stawka * B;
-      r.podstawa = B;
-      r.pit = pitScale(B, o.rok);
-      r.netto = B - r.zdrowotna - r.pit;
-      r.kosztPracy = B;
-      return r;
-    }
-
-    /* Netto → brutto: szukanie połówkowe (funkcja netto(brutto) jest rosnąca) */
-    function fromNetto(nettoMies, calc, o) {
-      var lo = 0, hi = Math.max(1000, nettoMies * 3);
-      for (var i = 0; i < 60; i++) {
-        var mid = (lo + hi) / 2;
-        if (calc(mid, o).netto / 12 < nettoMies) lo = mid; else hi = mid;
-      }
-      return (lo + hi) / 2;
-    }
-
-    /* ---------- Wydatki i podatki pośrednie (miesięcznie) ---------- */
-    var EXP = [
-      { key: 'jedzenie', label: 'Jedzenie i napoje bezalkoholowe', share: 0.25, note: 'VAT 5%' },
-      { key: 'paliwo', label: 'Paliwo (benzyna)', share: 0.06, note: 'VAT 23% + akcyza + opłata paliwowa' },
-      { key: 'energia', label: 'Prąd i gaz', share: 0.07, note: 'VAT 23% (akcyza na prąd pominięta — ok. 0,5% ceny)' },
-      { key: 'papierosy', label: 'Papierosy', share: 0, note: 'VAT 23% + akcyza kwotowa i procentowa' },
-      { key: 'epapierosy', label: 'E-papierosy i liquidy', share: 0, note: 'tylko VAT 23% — akcyza do weryfikacji' },
-      { key: 'alkohol', label: 'Alkohol', share: 0, note: 'tylko VAT 23% — akcyza pominięta' },
-      { key: 'vat23', label: 'Pozostałe zakupy (ubrania, elektronika, chemia, telefon, internet)', share: 0.22, note: 'VAT 23%' },
-      { key: 'vat8', label: 'Usługi z VAT 8% (restauracje, bilety, hotele, woda)', share: 0.08, note: 'VAT 8%' },
-      { key: 'bezvat', label: 'Bez VAT (czynsz, najem, raty, leczenie, oszczędności)', share: 0.32, note: 'bez podatków pośrednich' }
-    ];
+    var uop = TAX.uop, emeryt = TAX.emeryt, fromNetto = TAX.fromNetto, EXP = TAX.EXP;
 
     var box = document.getElementById('expenses');
     box.innerHTML = EXP.map(function (e) {
@@ -948,10 +1095,11 @@
         ['Rodzina 800+', pr.rodzina_800_plus['2027']], ['Dotacja do ZUS (FUS)', w.dotacja_fus], ['Składka do budżetu UE', w.skladka_do_budzetu_ue],
         ['13. i 14. emerytura', pr.emerytura_13_i_14['2027']], ['Ochrona zdrowia z budżetu państwa', ob.zdrowie['2027'].z_budzetu_panstwa]
       ];
+      if (D.kosciol) items.push(['Fundusz Kościelny', D.kosciol.fundusz_koscielny['2027']]);
       var t27 = L('2027').wydatki.ogolem.v;
       table(document.getElementById('calc-items'), {
         cols: [{ head: 'Pozycja (budżet 2027)' }, { head: 'Kwota', cls: 'n' }, { head: 'Z Twoich podatków rocznie', cls: 'n' }],
-        rows: items.map(function (it) { return [esc(it[0]), num(it[1]), zlNum(Z(contrib * it[1].v / t27, it[1].src, 'Twój wkład × udział pozycji w wydatkach 2027'), it[0])]; })
+        rows: items.map(function (it) { return [esc(it[0]), num(it[1], { dec: it[1].v < 1 ? 3 : 1 }), zlNum(Z(contrib * it[1].v / t27, it[1].src, 'Twój wkład × udział pozycji w wydatkach 2027'), it[0])]; })
       });
     }
 
@@ -985,13 +1133,384 @@
     run();
   };
 
+  /* ===== KALKULATOR OBIETNIC WYBORCZYCH =====
+     Dane: budzet.json → obietnice (lista, szacunki kosztów, źródła).
+     Każda obietnica ma „model”, który liczy:
+       budget(pr, prm, est) — skutek dla budżetu w mld zł rocznie
+                              (+ koszt / ubytek dochodów, − dodatkowe wpływy)
+       direct(pr, prm, os)  — zysk bezpośredni jednej osoby w zł rocznie
+     Część kosztu przypadająca na osobę: po równo na mieszkańca albo
+     proporcjonalnie do jej podatków płaconych do budżetu państwa. */
+  pages.obietnice = function () {
+    var OB = D.obietnice, G = OB.grupy;
+    var P26 = D.parametry_podatkowe['2026'];
+    var SRC_PL = P26.src;
+    var AK_SRC = D.parametry_podatkowe.akcyza_2026.src;
+    var TAXREV = L('2027').dochody.podatkowe;                  // mianownik „wg Twoich podatków”
+    var DOCH = L('2027').dochody.ogolem;
+    var PKB27 = D.makro.pkb_nominalne_mld['2027'];
+    var P800 = D.programy_spoleczne.rodzina_800_plus['2027'];
+    var OBS = L('2027').wydatki.obsluga_dlugu_sp;
+    var pitBP = L('2027').dochody.podatki.filter(function (t) { return t.klucz === 'pit'; })[0].v;
+    var pitJST = L('2027').udzialy_jst_w_pit.v;
+    var SHARE_BP = pitBP / (pitJST + pitBP);                    // część PIT trafiająca do budżetu państwa
+    var AVG = D.makro.przecietne_wynagrodzenie_brutto_zl['2026'].v;
+
+    var CUSTOM = {
+      id: 'wlasna', kto: [], tytul: 'Własna obietnica — wpisz kwotę', model: 'wlasna', rodzaj: 'wlasna',
+      zrodlo_obietnicy: 'Twoja propozycja albo obietnica, której nie ma na liście',
+      status: 'Wpisz koszt w mld zł albo kwotę na osobę i liczbę osób.', status_src: [],
+      param: { rodzaj: 'koszt', tryb: 'osoby', mld: 10, zl: 500, osoby: 1000, dla_ciebie: 0 },
+      opis: 'Przykład: nowe świadczenie 500 zł miesięcznie dla miliona osób to 6 mld zł rocznie. Jeśli to podatek, wybierz „wpływ do budżetu”, a w ostatnim polu wpisz, ile zapłaciłbyś Ty.',
+      szacunki: []
+    };
+    var LIST = OB.lista.concat([CUSTOM]);
+    var byId = {}; LIST.forEach(function (p) { byId[p.id] = p; });
+
+    var st = { id: OB.lista[0].id, prm: {}, est: {}, fin: 'podatki', filtr: 'wszystkie' };
+    function prmOf(pr) { return st.prm[pr.id] || (st.prm[pr.id] = JSON.parse(JSON.stringify(pr.param || {}))); }
+    function estIdx(pr) { return st.est[pr.id] || 0; }
+
+    /* ---------- formatowanie ---------- */
+    function zlf(v) { return fmt(Math.round(v), 0) + ' zł'; }
+    function sgn(v) { return (Math.round(v) > 0 ? '+' : Math.round(v) < 0 ? '−' : '') + fmt(Math.abs(Math.round(v)), 0); }
+    function Z(v, src, wyl, extra) { return mk(Math.round(v), src || [], Object.assign({ wyliczone: wyl }, extra || {})); }
+    function zlNum(val, label, signed) { return num(val, { unit: 'zł', dec: 0, label: label, text: (signed ? sgn(val.v) : fmt(val.v, 0)) + ' zł' }); }
+    function groupName(k) { return G[k] || k; }
+    function srcLinks(ids) {
+      return (ids || []).map(function (id) {
+        var s = D.zrodla[id]; if (!s) return '';
+        return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.wydawca) + ', ' + esc(s.data) + '</a>';
+      }).filter(Boolean).join('; ');
+    }
+
+    /* ---------- osoba ---------- */
+    var pform = document.getElementById('ob-person');
+    function person(overrideBrutto) {
+      var fd = new FormData(pform);
+      var typ = fd.get('typ'), tryb = fd.get('tryb');
+      var amount = Math.max(0, parseFloat(fd.get('kwota')) || 0);
+      var dzieci = Math.max(0, Math.round(parseFloat(fd.get('dzieci')) || 0));
+      var o = { rok: '2026', kup300: false, mlody: false };
+      var calc = typ === 'uop' ? TAX.uop : TAX.emeryt;
+      var bm = overrideBrutto !== undefined ? overrideBrutto : (tryb === 'brutto' ? amount : TAX.fromNetto(amount, calc, o));
+      var r = calc(bm, o);
+      var ind = TAX.autoIndirect(r.netto / 12);
+      var contrib = 12 * (ind.vat + ind.akcyza) + r.pit * SHARE_BP;
+      return { typ: typ, tryb: tryb, dzieci: dzieci, calc: calc, o: o, bm: bm, r: r, ind: ind, contrib: contrib };
+    }
+    function pitDelta(os, extra) {
+      var r2 = os.calc(os.bm, Object.assign({}, os.o, extra));
+      return r2.netto - os.r.netto;
+    }
+    function baseRules() { return TAX.rules({ rok: '2026' }); }
+
+    /* ---------- estymacja z wybranego szacunku ---------- */
+    function est(pr) { return pr.szacunki && pr.szacunki.length ? pr.szacunki[Math.min(estIdx(pr), pr.szacunki.length - 1)] : null; }
+
+    /* ---------- modele ---------- */
+    var M = {
+      pit_kwota: {
+        fields: [{ key: 'kwota_wolna', label: 'Kwota wolna od podatku', unit: 'zł rocznie', min: 30000, max: 300000, step: 1000 }],
+        direct: function (pr, prm, os) {
+          var r = baseRules(); var kz = 0.12 * prm.kwota_wolna;
+          return { v: pitDelta(os, { rules: { progi: r.progi, kz: kz } }), wyl: 'Twój PIT przy kwocie zmniejszającej podatek ' + zlf(kz) + ' rocznie zamiast ' + zlf(r.kz) };
+        }
+      },
+      pit_prog: {
+        fields: [{ key: 'prog', label: 'Drugi próg PIT', unit: 'zł rocznie', min: 120000, max: 1000000, step: 5000 }],
+        direct: function (pr, prm, os) {
+          var T = Math.max(120000, prm.prog);
+          return { v: pitDelta(os, { rules: { progi: [[T, 0.12], [Infinity, 0.32]], kz: baseRules().kz } }), wyl: 'Twój PIT ze stawką 12% do ' + zlf(T) + ' dochodu zamiast do 120 000 zł' };
+        }
+      },
+      pit_liniowy: {
+        fields: [],
+        direct: function (pr, prm, os) {
+          return { v: pitDelta(os, { rules: { progi: [[Infinity, 0.12]], kz: baseRules().kz } }), wyl: 'Twój PIT ze stawką 12% od całego dochodu' };
+        }
+      },
+      pit_rodzina: {
+        fields: [],
+        direct: function (pr, prm, os) {
+          if (os.dzieci < prm.min_dzieci) return { v: 0, nd: 'Nie dotyczy Ciebie: ulga wymaga co najmniej ' + prm.min_dzieci + ' dzieci (w polu „Dzieci do 18 lat” masz ' + os.dzieci + ').' };
+          return { v: pitDelta(os, { zwolnienie: prm.limit }), wyl: 'Twój PIT przy zwolnieniu przychodu do ' + zlf(prm.limit) + ' rocznie (jeden rodzic)' };
+        }
+      },
+      pit_2027: {
+        fields: [],
+        direct: function (pr, prm, os) { return { v: pitDelta(os, { rok: '2027' }), wyl: 'Twój PIT wg skali z projektu 2027 zamiast skali 2026' }; }
+      },
+      vat_stawka: {
+        fields: [{ key: 'stawka', label: 'Podstawowa stawka VAT', unit: '%', min: 5, max: 30, step: 1 }],
+        direct: function (pr, prm, os) {
+          var f = 1 - (1 + prm.stawka / 100) / 1.23;
+          return { v: os.ind.spend23 * 12 * f, wyl: 'Twoje zakupy z VAT 23% (ok. ' + zlf(os.ind.spend23) + ' miesięcznie = 35% netto wg typowego koszyka) × 12 × (1 − ' + fmt(1 + prm.stawka / 100, 2) + ' / 1,23); zakładamy pełne obniżenie cen' };
+        }
+      },
+      vat_prad: {
+        fields: [{ key: 'rachunek', label: 'Twój rachunek za prąd', unit: 'zł miesięcznie', min: 0, max: 5000, step: 10 }],
+        direct: function (pr, prm, os) {
+          return { v: prm.rachunek * 12 * (1 - 1.05 / 1.23), wyl: 'rachunek ' + zlf(prm.rachunek) + ' × 12 × (1 − 1,05 / 1,23) — cena spada o 14,6%' };
+        }
+      },
+      belka: {
+        fields: [{ key: 'zyski', label: 'Twoje zyski kapitałowe (odsetki, dywidendy, sprzedaż akcji)', unit: 'zł rocznie', min: 0, max: 10000000, step: 100 }],
+        direct: function (pr, prm, os) {
+          if (!prm.zyski) return { v: 0, nd: 'Wpisz swoje roczne zyski kapitałowe — bez nich nic nie zyskujesz.' };
+          return { v: 0.19 * Math.min(prm.zyski, prm.limit), wyl: '19% × ' + zlf(Math.min(prm.zyski, prm.limit)) + (prm.zyski > prm.limit ? ' (do limitu ' + zlf(prm.limit) + ')' : '') };
+        }
+      },
+      obszar_pkb: {
+        fields: [{ key: 'proc', label: 'Docelowe wydatki', unit: '% PKB', min: 0, max: 20, step: 0.1 }],
+        direct: function () { return { v: 0, nd: 'Nie dostajesz gotówki — korzyścią jest usługa publiczna, więc liczy się tylko Twoja część kosztu.' }; }
+      },
+      swiadczenie_800: {
+        fields: [{ key: 'kwota', label: 'Świadczenie na dziecko', unit: 'zł miesięcznie', min: 0, max: 5000, step: 50 }],
+        direct: function (pr, prm, os) {
+          if (!os.dzieci) return { v: 0, nd: 'W polu „Dzieci do 18 lat” masz 0 — nie dostajesz świadczenia.' };
+          return { v: os.dzieci * (prm.kwota - 800) * 12, wyl: os.dzieci + ' × (' + prm.kwota + ' − 800 zł) × 12' };
+        }
+      },
+      oszczednosc: {
+        fields: [],
+        direct: function () { return { v: 0, nd: 'Nie zmienia Twojej pensji — liczy się tylko to, o ile mniej budżet musiałby pobrać z Twoich podatków.' }; }
+      },
+      wlasna: {
+        fields: [
+          { key: 'rodzaj', label: 'Co to jest', type: 'select', options: [['koszt', 'koszt dla budżetu (świadczenie, wydatek, obniżka podatku)'], ['wplyw', 'wpływ do budżetu (nowy podatek, cięcie wydatków)']] },
+          { key: 'tryb', label: 'Jak podajesz kwotę', type: 'select', options: [['osoby', 'kwota na osobę × liczba osób'], ['mld', 'łącznie w mld zł rocznie']] },
+          { key: 'mld', label: 'Łącznie', unit: 'mld zł rocznie', min: 0, max: 1000, step: 0.1, when: ['tryb', 'mld'] },
+          { key: 'zl', label: 'Kwota na osobę', unit: 'zł miesięcznie', min: 0, max: 100000, step: 10, when: ['tryb', 'osoby'] },
+          { key: 'osoby', label: 'Liczba osób', unit: 'tys.', min: 0, max: 40000, step: 10, when: ['tryb', 'osoby'] },
+          { key: 'dla_ciebie', label: 'Ile z tego dostaniesz (albo zapłacisz) Ty', unit: 'zł miesięcznie', min: 0, max: 100000, step: 10 }
+        ],
+        direct: function (pr, prm) {
+          var sign = prm.rodzaj === 'wplyw' ? -1 : 1;
+          return { v: sign * prm.dla_ciebie * 12, wyl: fmt(prm.dla_ciebie, 0) + ' zł × 12' + (sign < 0 ? ' (płacisz)' : '') };
+        }
+      }
+    };
+    Object.keys(M).forEach(function (k) { M[k].budget = OB_BUDGET[k]; });
+
+    /* ---------- pełne przeliczenie jednej obietnicy dla jednej osoby ---------- */
+    function evaluate(pr, os, prm, e) {
+      prm = prm || prmOf(pr);
+      var m = M[pr.model];
+      var b = m.budget(pr, prm, e === undefined ? est(pr) : e);
+      var d = m.direct(pr, prm, os);
+      var shareV = st.fin === 'rowno' ? b.v * 1e9 / POP : b.v * os.contrib / TAXREV.v;
+      var shareWyl = st.fin === 'rowno'
+        ? 'skutek dla budżetu / ludność (' + fmt(POP / 1e6, 3) + ' mln)'
+        : 'skutek dla budżetu × Twoje podatki do budżetu państwa (' + zlf(os.contrib) + ' rocznie: VAT i akcyza z typowego koszyka + ' + fmt(SHARE_BP * 100, 0) + '% PIT) / dochody podatkowe budżetu 2027 (' + fmt(TAXREV.v) + ' mld zł)';
+      return { b: b, d: d, share: shareV, shareWyl: shareWyl, bal: d.v - shareV };
+    }
+    function shareSrc() { return st.fin === 'rowno' ? ['gus_ludnosc_2025'] : TAXREV.src.concat(SRC_PL, AK_SRC); }
+
+    /* ---------- lista rozwijana ---------- */
+    var sel = document.getElementById('ob-select');
+    (function () {
+      var groups = {};
+      OB.lista.forEach(function (p) { (groups[p.kto[0]] = groups[p.kto[0]] || []).push(p); });
+      var h = Object.keys(G).filter(function (k) { return groups[k]; }).map(function (k) {
+        return '<optgroup label="' + esc(G[k]) + '">' + groups[k].map(function (p) {
+          var also = p.kto.slice(1).map(groupName);
+          return '<option value="' + esc(p.id) + '">' + esc(p.tytul) + (also.length ? ' (też: ' + esc(also.join(', ')) + ')' : '') + '</option>';
+        }).join('') + '</optgroup>';
+      }).join('');
+      h += '<optgroup label="Własna"><option value="wlasna">' + esc(CUSTOM.tytul) + '</option></optgroup>';
+      sel.innerHTML = h;
+    })();
+
+    /* ---------- karta obietnicy ---------- */
+    function renderPromise() {
+      var pr = byId[st.id], prm = prmOf(pr), m = M[pr.model];
+      sel.value = pr.id;
+      var tags = pr.kto.map(function (k) { return '<span class="badge">' + esc(groupName(k)) + '</span>'; }).join(' ');
+      var h = (tags ? '<p class="ob-tags">' + tags + '</p>' : '') +
+        '<p class="small"><strong>' + esc(pr.zrodlo_obietnicy) + '.</strong> ' + esc(pr.status) +
+        (pr.status_src && pr.status_src.length ? ' <span class="muted">Źródło: ' + srcLinks(pr.status_src) + '.</span>' : '') + '</p>' +
+        '<p class="small muted">' + esc(pr.opis) + '</p>' +
+        (pr.weryfikuj ? '<p class="small ob-verify">Do weryfikacji: ' + esc(pr.weryfikuj) + '</p>' : '');
+      document.getElementById('ob-meta').innerHTML = h;
+
+      document.getElementById('ob-params').innerHTML = m.fields.map(function (f) {
+        if (f.when && prm[f.when[0]] !== f.when[1]) return '';
+        var id = 'obp-' + f.key;
+        if (f.type === 'select') {
+          return '<label class="field"><span class="field__label">' + esc(f.label) + '</span><select id="' + id + '" data-p="' + f.key + '">' +
+            f.options.map(function (o) { return '<option value="' + o[0] + '"' + (prm[f.key] === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></label>';
+        }
+        return '<label class="field field--row"><span class="field__label">' + esc(f.label) + '<small>' + esc(f.unit) + '</small></span>' +
+          '<span class="field__input"><input type="number" inputmode="decimal" id="' + id + '" data-p="' + f.key + '" min="' + f.min + '" max="' + f.max + '" step="' + f.step + '" value="' + prm[f.key] + '"></span></label>';
+      }).join('');
+
+      var eh = '';
+      if (pr.szacunki && pr.szacunki.length > 1) {
+        eh = '<fieldset class="choice choice--stack"><legend>Czyj szacunek kosztu</legend>' + pr.szacunki.map(function (e, i) {
+          return '<label><input type="radio" name="est" value="' + i + '"' + (i === estIdx(pr) ? ' checked' : '') + '> <span>' + esc(e.kto) + ': <strong>' + fmt(e.v) + ' mld zł</strong>' +
+            (e.przy ? ' <span class="muted">(dla ' + (e.przy > 100 ? zlf(e.przy) : e.przy + '%') + ')</span>' : '') + '</span></label>';
+        }).join('') + '</fieldset>';
+      } else if (pr.szacunki && pr.szacunki.length === 1) {
+        var e1 = pr.szacunki[0];
+        eh = '<p class="small muted">Szacunek kosztu: ' + esc(e1.kto) + ' — ' + fmt(e1.v) + ' mld zł rocznie. Źródło: ' + srcLinks(e1.src) + '.</p>';
+      } else if (pr.model !== 'wlasna') {
+        eh = '<p class="small muted">Koszt wyliczony z danych budżetu (wzór w dymku przy wyniku).</p>';
+      }
+      document.getElementById('ob-est').innerHTML = eh;
+    }
+
+    /* ---------- wynik ---------- */
+    function renderResult() {
+      var pr = byId[st.id], os = person(), res = evaluate(pr, os);
+      var b = res.b, isCost = b.v >= 0;
+      var gainWord = pr.rodzaj === 'oszczednosc' ? 'oszczędności' : 'wpływów';
+      var perPerson = b.v * 1e9 / POP;
+      document.getElementById('ob-result-title').textContent = 'Wynik rocznie: ' + pr.tytul;
+
+      document.getElementById('ob-budget').innerHTML =
+        '<p class="ob-big ' + (isCost ? 'is-cost' : 'is-gain') + '">' + num(b, { label: isCost ? 'Koszt dla budżetu rocznie' : (pr.rodzaj === 'oszczednosc' ? 'Oszczędność budżetu rocznie' : 'Dodatkowe wpływy rocznie'), person: true, text: fmt(Math.abs(b.v), Math.abs(b.v) < 1 ? 2 : 1) }) +
+        '<span class="kpi__unit"> mld zł ' + (isCost ? 'kosztu' : gainWord) + '</span></p>' +
+        '<ul class="ob-facts">' +
+        '<li>' + fmt(Math.abs(b.v) / DOCH.v * 100, 1) + '% dochodów budżetu 2027</li>' +
+        '<li>' + fmt(Math.abs(b.v) / PKB27.v * 100, 2) + '% PKB</li>' +
+        '<li>' + zlf(Math.abs(perPerson)) + ' na mieszkańca</li>' +
+        '<li>' + fmt(Math.abs(b.v) * 1000 / 365, 0) + ' mln zł dziennie</li></ul>';
+
+      var d = res.d;
+      var directVal = Z(d.v, pr.model === 'belka' || pr.model === 'vat_prad' || pr.model === 'wlasna' ? [] : SRC_PL, d.wyl || d.nd);
+      var shareVal = Z(-res.share, shareSrc(), res.shareWyl);
+      var balVal = Z(res.bal, shareSrc(), 'zysk bezpośredni − Twoja część ' + (isCost ? 'kosztu' : gainWord));
+      var scale = Math.max(Math.abs(d.v), Math.abs(res.share), 1);
+      function bar(v, cls) { return '<span class="ob-bar ' + cls + '" style="width:' + (Math.abs(v) / scale * 100).toFixed(1) + '%"></span>'; }
+      document.getElementById('ob-you').innerHTML =
+        '<div class="ob-row"><span class="ob-row__label">Zysk bezpośredni</span>' + bar(d.v, d.v >= 0 ? 'is-gain' : 'is-cost') +
+          '<span class="ob-row__value">' + zlNum(directVal, 'Zysk bezpośredni rocznie', true) + '</span></div>' +
+        (d.nd ? '<p class="small muted ob-nd">' + esc(d.nd) + '</p>' : '') +
+        '<div class="ob-row"><span class="ob-row__label">' + (isCost ? 'Twoja część kosztu' : 'Twoja część ' + gainWord) + '</span>' + bar(res.share, isCost ? 'is-cost' : 'is-gain') +
+          '<span class="ob-row__value">' + zlNum(shareVal, 'Twoja część ' + (isCost ? 'kosztu' : gainWord) + ' rocznie', true) + '</span></div>' +
+        '<div class="ob-row ob-row--total"><span class="ob-row__label">Bilans</span><span></span>' +
+          '<span class="ob-row__value ' + (res.bal >= 0.5 ? 'delta--down-good' : res.bal <= -0.5 ? 'delta--up-bad' : '') + '">' + zlNum(balVal, 'Bilans rocznie', true) + '</span></div>' +
+        '<p class="small muted">Miesięcznie: ' + sgn(res.bal / 12) + ' zł. Liczone dla ' + (os.typ === 'uop' ? 'pensji' : 'emerytury') + ' ' + zlf(os.bm) + ' brutto (' + zlf(os.r.netto / 12) + ' netto).</p>';
+
+      // zdanie perspektywiczne — duże kwoty łatwiej zrozumieć w porównaniu
+      var a = Math.abs(b.v);
+      document.getElementById('ob-perspective').innerHTML = a < 0.05 ? 'Skutek dla budżetu jest bliski zera.' :
+        (isCost ? 'Taki koszt' : pr.rodzaj === 'oszczednosc' ? 'Taka oszczędność' : 'Takie wpływy') + ' to ' + fmt(a / P800.v * 100, a / P800.v < 0.1 ? 1 : 0) + '% rocznego kosztu programu Rodzina 800+ (' + fmt(P800.v) + ' mld zł) albo ' +
+        (a / (OBS.v / 365) < 2 ? fmt(a / (OBS.v / 8760), 0) + ' godzin' : fmt(a / (OBS.v / 365), 0) + ' dni') + ' odsetek od długu państwa (' + fmt(OBS.v) + ' mld zł rocznie w 2027 r.). ' +
+        (isCost ? 'Bez cięć gdzie indziej albo wyższych innych podatków oznacza to większy deficyt — projekt 2027 zakłada już ' + fmt(L('2027').deficyt.v) + ' mld zł.' : '');
+    }
+
+    /* ---------- drabinka zarobków ---------- */
+    function renderLadder() {
+      var pr = byId[st.id], me = person();
+      var levels = me.typ === 'uop'
+        ? [P26.placa_minimalna, 6000, 8000, AVG, 12000, 15000, 20000, 30000]
+        : [2000, 3000, 4000, 5000, 7000, 10000];
+      var mine = Math.round(me.bm);
+      if (levels.indexOf(mine) < 0) levels.push(mine);
+      levels.sort(function (x, y) { return x - y; });
+      document.getElementById('ob-ladder-lead').textContent = 'Rocznie, ' + (me.typ === 'uop' ? 'umowa o pracę' : 'emerytura') + ', ' +
+        (me.dzieci ? me.dzieci + ' dzieci' : 'bez dzieci') + ', koszt rozłożony ' + (st.fin === 'rowno' ? 'po równo na mieszkańca' : 'według podatków płaconych do budżetu') + '. Twój wiersz jest pogrubiony.';
+      var rows = levels.map(function (bmv) {
+        var os = person(bmv), res = evaluate(pr, os);
+        var label = zlf(bmv) + (bmv === P26.placa_minimalna && me.typ === 'uop' ? ' <span class="muted">(płaca minimalna)</span>' : bmv === AVG && me.typ === 'uop' ? ' <span class="muted">(przeciętna)</span>' : '');
+        if (bmv === mine) label = '<strong>' + label + ' — Ty</strong>';
+        return [label, zlf(os.r.netto / 12),
+          zlNum(Z(res.d.v, SRC_PL, res.d.wyl || res.d.nd), 'Zysk bezpośredni', true),
+          zlNum(Z(-res.share, shareSrc(), res.shareWyl), 'Część kosztu', true),
+          '<span class="' + (res.bal >= 0.5 ? 'delta--down-good' : res.bal <= -0.5 ? 'delta--up-bad' : '') + '">' + zlNum(Z(res.bal, shareSrc(), 'zysk − część kosztu'), 'Bilans', true) + '</span>'];
+      });
+      table(document.getElementById('ob-ladder'), {
+        cols: [{ head: 'Brutto miesięcznie' }, { head: 'Netto', cls: 'n' }, { head: 'Zysk bezpośredni', cls: 'n' }, { head: 'Część kosztu', cls: 'n' }, { head: 'Bilans', cls: 'n' }],
+        rows: rows
+      });
+    }
+
+    /* ---------- zestawienie wszystkich obietnic ---------- */
+    var filt = document.getElementById('ob-filter');
+    filt.innerHTML = '<option value="wszystkie">Wszystkie</option>' + Object.keys(G).map(function (k) { return '<option value="' + k + '">' + esc(G[k]) + '</option>'; }).join('');
+    function renderTable() {
+      var os = person();
+      var list = OB.lista.filter(function (p) { return st.filtr === 'wszystkie' || p.kto.indexOf(st.filtr) >= 0; });
+      var sumB = 0, sumBal = 0;
+      var items = list.map(function (p) {
+        var res = evaluate(p, os, JSON.parse(JSON.stringify(p.param)), p.szacunki.length ? p.szacunki[0] : null);
+        sumB += res.b.v; sumBal += res.bal;
+        return { p: p, res: res };
+      }).sort(function (a, b) { return b.res.b.v - a.res.b.v; });
+      var rows = items.map(function (it) {
+        var p = it.p, res = it.res;
+        return ['<button type="button" class="linklike" data-go="' + esc(p.id) + '">' + esc(p.tytul) + '</button>',
+          esc(p.kto.map(groupName).join(', ')),
+          num(res.b, { label: p.tytul, person: true, text: (res.b.v < 0 ? '−' : '') + fmt(Math.abs(res.b.v), Math.abs(res.b.v) < 1 ? 2 : 1) + ' mld zł' }),
+          sgn(res.b.v * 1e9 / POP) + ' zł',
+          '<span class="' + (res.bal >= 0.5 ? 'delta--down-good' : res.bal <= -0.5 ? 'delta--up-bad' : '') + '">' + sgn(res.bal) + ' zł</span>'];
+      });
+      var one = st.filtr !== 'wszystkie' && st.filtr !== 'Scenariusz';
+      table(document.getElementById('ob-table'), {
+        cols: [{ head: 'Obietnica' }, { head: 'Kto' }, { head: 'Budżet rocznie', cls: 'n' }, { head: 'Na mieszkańca', cls: 'n' }, { head: 'Twój bilans rocznie', cls: 'n' }],
+        rows: rows,
+        foot: one && items.length > 1 ? ['Razem (górne przybliżenie)', '', (sumB < 0 ? '−' : '') + fmt(Math.abs(sumB)) + ' mld zł', sgn(sumB * 1e9 / POP) + ' zł', sgn(sumBal) + ' zł'] : null
+      });
+      document.getElementById('ob-table-note').textContent = 'Parametry domyślne i pierwszy szacunek z listy przy każdej obietnicy; bilans dla danych z karty „Ty”. ' +
+        (one ? 'Suma to górne przybliżenie — zmiany w PIT częściowo się pokrywają. ' : 'Wybierz ugrupowanie, żeby zobaczyć sumę jego obietnic. ') + OB.uwaga;
+    }
+
+    document.getElementById('ob-unpriced').innerHTML = '<ul class="list-tight small">' + OB.bez_wyceny.map(function (x) {
+      return '<li><strong>' + esc(x.tytul) + '</strong> <span class="badge">' + esc(x.kto) + '</span><br>' + esc(x.opis) + ' <span class="muted">Źródło: ' + srcLinks(x.src) + '.</span></li>';
+    }).join('') + '</ul>';
+
+    /* ---------- zdarzenia ---------- */
+    function all() { renderResult(); renderLadder(); renderTable(); }
+    function go(id, push) {
+      if (!byId[id]) return;
+      st.id = id; renderPromise(); all();
+      if (push !== false && history.replaceState) history.replaceState(null, '', '#' + id);
+    }
+    sel.addEventListener('change', function () { go(sel.value); });
+    var form = document.getElementById('ob-form');
+    form.addEventListener('submit', function (e) { e.preventDefault(); });
+    form.addEventListener('input', function (e) {
+      var pr = byId[st.id], prm = prmOf(pr), k = e.target.getAttribute('data-p');
+      if (k) {
+        prm[k] = e.target.tagName === 'SELECT' ? e.target.value : Math.max(0, parseFloat(e.target.value) || 0);
+        if (e.target.tagName === 'SELECT') renderPromise();
+      } else if (e.target.name === 'est') {
+        st.est[pr.id] = parseInt(e.target.value, 10);
+      } else return;
+      all();
+    });
+    pform.addEventListener('submit', function (e) { e.preventDefault(); });
+    pform.addEventListener('input', all);
+    pform.addEventListener('change', function (e) {
+      if (e.target.name === 'tryb' || e.target.name === 'typ') {
+        var t = pform.querySelector('input[name=tryb]:checked').value, typ = pform.querySelector('input[name=typ]:checked').value;
+        document.getElementById('ob-kwota-hint').textContent = typ === 'emeryt' ? 'Wpisz emeryturę ' + t + ' (miesięcznie).' : t === 'netto' ? 'Kwota „na rękę” z paska wypłaty.' : 'Kwota z umowy o pracę.';
+      }
+      all();
+    });
+    seg('ob-fin', function (v) { st.fin = v; all(); });
+    filt.addEventListener('change', function () { st.filtr = filt.value; renderTable(); });
+    document.getElementById('ob-table').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-go]'); if (!b) return;
+      go(b.getAttribute('data-go'));
+      document.getElementById('ob-form').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      sel.focus({ preventScroll: true });
+    });
+    window.addEventListener('hashchange', function () { var h = location.hash.slice(1); if (byId[h] && h !== st.id) go(h, false); });
+
+    var start = location.hash.slice(1);
+    go(byId[start] ? start : st.id, false);
+  };
+
   /* ===== ŹRÓDŁA ===== */
   pages.zrodla = function () {
     var used = {};
     (function walk(x) {
       if (Array.isArray(x)) { x.forEach(walk); return; }
       if (x && typeof x === 'object') {
-        if (Array.isArray(x.src)) x.src.forEach(function (s) { used[s] = (used[s] || 0) + 1; });
+        ['src', 'status_src', 'zrodlo_konkordat'].forEach(function (key) { if (Array.isArray(x[key])) x[key].forEach(function (s) { used[s] = (used[s] || 0) + 1; }); });
         Object.keys(x).forEach(function (k) { if (k !== 'zrodla') walk(x[k]); });
       }
     })(D);

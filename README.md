@@ -12,8 +12,9 @@ Czysty HTML/CSS/JS, bez frameworków i bez kroku budowania. Styl: Forge UI.
 budzet-polski/
 ├── index.html          Start — przegląd trzech lat
 ├── kalkulator.html     Twoja pensja: podatki, składki, VAT/akcyza i na co idą
+├── obietnice.html      Kalkulator obietnic wyborczych: koszt dla budżetu i dla Ciebie
 ├── dochody.html        Dochody wg źródeł, zmiany podatkowe 2027
-├── wydatki.html        Wydatki wg działów, fundusze poza budżetem
+├── wydatki.html        Wydatki wg działów, fundusze poza budżetem, Kościoły i konkordat
 ├── dlug.html           Deficyt, dług (4 definicje), porównanie z UE
 ├── slowniczek.html     Pojęcia
 ├── metodologia.html    Zastrzeżenia i znane luki
@@ -60,7 +61,7 @@ Branch: `main`, folder `/ (root)` → Save**. Strona będzie pod
 
 ## Zmiana treści podstron
 
-Nagłówek, nawigacja, social FAB i stopka są identyczne na 8 stronach, więc strony generuje
+Nagłówek, nawigacja, social FAB i stopka są identyczne na 9 stronach, więc strony generuje
 skrypt. Treść edytuj w `tools/build_pages.py`, potem:
 
 ```bash
@@ -87,3 +88,12 @@ Terminy: projekt budżetu — do 30 września, sprawozdanie z wykonania — do 3
 ## Licencja
 
 Apache 2.0 — patrz `LICENSE`. Dane pochodzą z dokumentów publicznych (MF, NIK, Eurostat, GUS, Sejm).
+
+## Obietnice wyborcze i wydatki kościelne
+
+- `obietnice.lista` w `data/budzet.json` — każda obietnica ma `model` (sposób liczenia, kod w `assets/app.js`: `OB_BUDGET` i `pages.obietnice`),
+  `param` (parametry domyślne) i `szacunki` (koszt wg różnych źródeł; `przy` = wartość parametru, dla której podano szacunek).
+  Modele: `pit_kwota`, `pit_prog`, `pit_liniowy`, `pit_rodzina`, `pit_2027`, `vat_stawka`, `vat_prad`, `belka`, `obszar_pkb`,
+  `swiadczenie_800`, `oszczednosc` (likwidacja wydatku — szacunek podawany jako dodatnia kwota wydatku).
+- `kosciol` — Fundusz Kościelny wg lat i pozostałe wydatki związane z Kościołami i konkordatem (strona Wydatki, sekcja `#kosciol`).
+- Po zmianie kodu PIT sprawdź, czy kalkulator „Twoje podatki” daje te same wyniki co przed zmianą.

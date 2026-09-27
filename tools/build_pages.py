@@ -5,7 +5,7 @@
 import os
 OUT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-NAV = [("index.html", "Start"), ("kalkulator.html", "Twoje podatki"), ("dochody.html", "Dochody"), ("wydatki.html", "Wydatki"), ("dlug.html", "Deficyt i dług"),
+NAV = [("index.html", "Start"), ("kalkulator.html", "Twoje podatki"), ("obietnice.html", "Obietnice"), ("dochody.html", "Dochody"), ("wydatki.html", "Wydatki"), ("dlug.html", "Deficyt i dług"),
        ("slowniczek.html", "Słowniczek"), ("metodologia.html", "Metodologia"), ("zrodla.html", "Źródła")]
 
 SPRITE = open(os.path.join(os.path.dirname(__file__), "sprite.html"), encoding="utf-8").read()
@@ -133,6 +133,7 @@ START = f'''
       </p>
       <div class="hero__actions">
         <a href="kalkulator.html" class="btn btn--primary">Policz swoje podatki</a>
+        <a href="obietnice.html" class="btn btn--ghost">Ile kosztują obietnice</a>
         <a href="wydatki.html" class="btn btn--ghost">Na co idą pieniądze</a>
       </div>
     </section>
@@ -146,6 +147,17 @@ START = f'''
     <!-- BENTO -->
     <section class="bento container">
       <div class="bento-grid">
+
+        <!-- Druga część serwisu: kalkulator obietnic wyborczych -->
+        <article class="glass-card bento-item bento-item--full promo-ob">
+          <div class="promo-ob__text">
+            <h2>Kalkulator obietnic wyborczych</h2>
+            <p class="muted">Niższe podatki, nowe świadczenia, więcej na wojsko albo zdrowie — sprawdź, ile kosztuje budżet każda zapowiedź,
+              ile zyskasz Ty przy swojej pensji i jaka część rachunku przypada na Ciebie.</p>
+            <a href="obietnice.html" class="btn btn--primary">Sprawdź obietnice</a>
+          </div>
+          <div class="promo-ob__list"><p class="kpi__label">Najdroższe zapowiedzi — koszt dla budżetu rocznie</p><div id="promo-ob"></div></div>
+        </article>
 
         <article class="glass-card bento-item bento-item--full">
           <h2>Trzy budżety obok siebie</h2>
@@ -241,8 +253,8 @@ WYDATKI = f'''
     <section class="hero hero--page container">
       <p class="eyebrow">Wydatki budżetu państwa</p>
       <h1 class="hero__title">Na co idą pieniądze</h1>
-      <p class="hero__lead">Wydatki według działów klasyfikacji budżetowej, najważniejsze pozycje projektu 2027
-        i pieniądze wydawane obok budżetu — przez fundusze w BGK i NFZ.</p>
+      <p class="hero__lead">Wydatki według działów klasyfikacji budżetowej, najważniejsze pozycje projektu 2027,
+        pieniądze wydawane obok budżetu — przez fundusze w BGK i NFZ — oraz wydatki związane z Kościołami i konkordatem.</p>
       {HOW_TO}
     </section>
 
@@ -284,6 +296,15 @@ WYDATKI = f'''
           <p class="muted small">Budżet państwa, samorządy, ZUS, NFZ i fundusze celowe razem — według funkcji (dane NIK).</p>
           <div id="chart-sector"></div>
           <p class="small muted" id="sector-total"></p>
+        </article>
+
+        <article class="glass-card bento-item bento-item--full" id="kosciol">
+          <h2>Kościoły, związki wyznaniowe i konkordat</h2>
+          <p class="muted small" id="kosciol-lead"></p>
+          <h3 class="kpi__label">Fundusz Kościelny — jedyna osobna pozycja w ustawie budżetowej</h3>
+          <div id="kosciol-fk"></div>
+          <div id="table-kosciol"></div>
+          <p class="callout small" id="kosciol-note"></p>
         </article>
 
         <article class="glass-card bento-item bento-item--full">
@@ -416,6 +437,12 @@ SLOWNICZEK = '''
           <dt id="subwencja">Subwencja</dt>
           <dd>Pieniądze z budżetu państwa dla samorządów, którymi same dysponują (np. subwencja oświatowa). Dotacja jest przeznaczona na konkretny cel.</dd>
 
+          <dt id="fundusz-koscielny">Fundusz Kościelny</dt>
+          <dd>Pozycja w budżecie MSWiA utworzona ustawą z 1950 r. jako rekompensata za ziemię przejętą od Kościołów. Dziś ok. 95% jego wydatków to składki na ubezpieczenia społeczne duchownych wszystkich legalnie działających wyznań. W projekcie na 2027 r. — 283,6 mln zł. <a href="wydatki.html#kosciol">Więcej</a>.</dd>
+
+          <dt id="konkordat">Konkordat</dt>
+          <dd>Umowa międzynarodowa Polski ze Stolicą Apostolską (podpisana w 1993 r., obowiązuje od 1998 r.). Z konkordatu wynikają m.in. lekcje religii w szkołach publicznych, finansowanie KUL i Uniwersytetu Papieskiego oraz duszpasterstwo w wojsku, więzieniach i szpitalach. Zmiana wymaga porozumienia obu stron.</dd>
+
           <dt id="dochody-niepodatkowe">Dochody niepodatkowe</dt>
           <dd>Wpływy inne niż podatki: dywidendy ze spółek Skarbu Państwa, cło, sprzedaż uprawnień do emisji CO2, opłaty i grzywny.</dd>
 
@@ -458,6 +485,7 @@ METODOLOGIA = '''
           <li><strong>Plan a wykonanie.</strong> Porównując 2025 z 2026–2027, zestawiamy wykonanie z planami. Wydatki zwykle są wykonywane w 94–97%.</li>
           <li><strong>Działy klasyfikacji.</strong> W trakcie roku rezerwy z działu 758 „Różne rozliczenia” są rozdzielane do innych działów, dlatego wykonanie działów różni się od planu.</li>
           <li><strong>Projekty podatkowe.</strong> Dochody 2027 zakładają zmiany podatkowe, które są dopiero projektami ustaw.</li>
+          <li><strong>Wydatki związane z Kościołami.</strong> W ustawie budżetowej osobno widać tylko Fundusz Kościelny. Koszt lekcji religii, uczelni kościelnych i kapelanów jest rozproszony w budżetach ministerstw i samorządów — podajemy ostatnie dostępne kwoty z odpowiedzi ministerstw i analiz, z różnych lat, jako rząd wielkości.</li>
           <li><strong>Relacje do PKB.</strong> Liczymy je z PKB nominalnego z założeń makroekonomicznych MF; Eurostat używa własnych danych, więc wyniki mogą się różnić o 0,1–0,3 pkt proc.</li>
         </ul>
 
@@ -469,6 +497,15 @@ METODOLOGIA = '''
           <li>W danych kwoty są zapisane z dokładnością do 1 mln zł; na stronie zaokrąglamy do 0,1 mld zł, żeby nie sugerować fałszywej precyzji.</li>
         </ul>
         <p id="pop"></p>
+
+        <h2>Kalkulator obietnic</h2>
+        <ul class="list-tight">
+          <li><strong>Koszt dla budżetu</strong> pochodzi z publicznych szacunków (Ministerstwo Finansów, CenEA, FOR, Kancelaria Prezydenta, wyliczenia redakcji). Gdy jest ich kilka, można wybrać, który pokazać. Domyślnie pokazujemy niezależny ośrodek analityczny, a gdy go brak — MF albo wyliczenie z danych budżetu.</li>
+          <li><strong>Zmiana parametru</strong> (kwota wolna, próg, stawka) przeskalowuje szacunek prostym wzorem: kwota wolna i stawka VAT — liniowo, próg PIT — logarytmicznie (ln(próg / 120 tys.)), co zgadza się z szacunkami dla 140 i 180 tys. zł. To przybliżenie, nie mikrosymulacja na danych podatników.</li>
+          <li><strong>Twój zysk bezpośredni</strong> liczymy tym samym modelem co kalkulator „Twoje podatki” (zasady PIT z 2026 r., umowa o pracę lub emerytura). Przy VAT zakładamy, że obniżka w całości trafia do cen.</li>
+          <li><strong>Twoja część kosztu</strong>: albo równo na każdego mieszkańca, albo proporcjonalnie do podatków, które płacisz do budżetu państwa (VAT i akcyza z typowego koszyka + część PIT). W rzeczywistości koszt może zostać pokryty długiem — wtedy spłacają go przyszli podatnicy razem z odsetkami.</li>
+          <li><strong>Nie sumuj obietnic bezkrytycznie.</strong> Zmiany w PIT wpływają na siebie nawzajem (np. przy zerowym PIT dla rodzin wyższy próg kosztuje mniej), dlatego suma w zestawieniu to górne przybliżenie.</li>
+        </ul>
 
         <h2>Znane luki</h2>
         <div id="todo"></div>
@@ -586,6 +623,118 @@ KALKULATOR = f'''
     </section>
 '''
 
+OBIETNICE = f'''
+    <section class="hero hero--page container">
+      <p class="eyebrow">Kalkulator obietnic wyborczych · liczy się w Twojej przeglądarce, nic nie jest wysyłane</p>
+      <h1 class="hero__title">Ile kosztują obietnice wyborcze</h1>
+      <p class="hero__lead">Wybierz zapowiedź partii albo polityka, zmień jej parametry i wpisz swoje zarobki.
+        Zobaczysz, ile kosztuje budżet, ile zyskasz Ty i jaka część rachunku przypada na Ciebie.</p>
+      {HOW_TO}
+    </section>
+
+    <section class="bento container">
+      <div class="bento-grid">
+
+        <!-- WYBÓR OBIETNICY -->
+        <article class="glass-card bento-item bento-item--wide">
+          <h2>Obietnica</h2>
+          <form id="ob-form" class="calc-form" novalidate>
+            <label class="field">
+              <span class="field__label">Wybierz z listy</span>
+              <select id="ob-select" name="ob"></select>
+            </label>
+            <div class="ob-meta" id="ob-meta"></div>
+            <div class="ob-params" id="ob-params"></div>
+            <div id="ob-est"></div>
+          </form>
+        </article>
+
+        <!-- DANE OSOBY -->
+        <article class="glass-card bento-item">
+          <h2>Ty</h2>
+          <form id="ob-person" class="calc-form" novalidate>
+            <fieldset class="choice">
+              <legend>Źródło dochodu</legend>
+              <label><input type="radio" name="typ" value="uop" checked> Umowa o pracę</label>
+              <label><input type="radio" name="typ" value="emeryt"> Emerytura / renta</label>
+            </fieldset>
+            <fieldset class="choice">
+              <legend>Wpisuję kwotę</legend>
+              <label><input type="radio" name="tryb" value="brutto" checked> brutto</label>
+              <label><input type="radio" name="tryb" value="netto"> netto (na rękę)</label>
+            </fieldset>
+            <label class="field">
+              <span class="field__label">Kwota miesięcznie (zł)</span>
+              <input type="number" id="ob-kwota" name="kwota" inputmode="decimal" min="0" max="1000000" step="1" value="9473">
+              <span class="field__hint" id="ob-kwota-hint">Domyślnie: prognoza przeciętnego wynagrodzenia brutto na 2026 r.</span>
+            </label>
+            <label class="field">
+              <span class="field__label">Dzieci do 18 lat</span>
+              <input type="number" id="ob-dzieci" name="dzieci" inputmode="numeric" min="0" max="15" step="1" value="0">
+            </label>
+          </form>
+        </article>
+
+        <!-- WYNIK -->
+        <article class="glass-card bento-item bento-item--full" aria-live="polite">
+          <div class="ob-result-head">
+            <h2 id="ob-result-title">Wynik rocznie</h2>
+            <div class="seg" id="ob-fin" role="group" aria-label="Jak rozłożyć koszt">
+              <button type="button" data-value="podatki" aria-pressed="true">Koszt wg Twoich podatków</button>
+              <button type="button" data-value="rowno" aria-pressed="false">Koszt po równo na mieszkańca</button>
+            </div>
+          </div>
+          <div class="ob-result">
+            <section class="ob-panel" aria-labelledby="ob-h-budzet">
+              <h3 id="ob-h-budzet" class="kpi__label">Budżet państwa</h3>
+              <div id="ob-budget"></div>
+            </section>
+            <section class="ob-panel ob-panel--you" aria-labelledby="ob-h-ty">
+              <h3 id="ob-h-ty" class="kpi__label">Ty</h3>
+              <div id="ob-you"></div>
+            </section>
+          </div>
+          <p class="callout small" id="ob-perspective"></p>
+        </article>
+
+        <!-- DRABINKA ZAROBKÓW -->
+        <article class="glass-card bento-item bento-item--full">
+          <h2>Kto zyskuje, a kto dopłaca — według zarobków</h2>
+          <p class="muted small" id="ob-ladder-lead"></p>
+          <div id="ob-ladder"></div>
+        </article>
+
+        <!-- ZESTAWIENIE -->
+        <article class="glass-card bento-item bento-item--full">
+          <h2>Wszystkie obietnice w jednej tabeli</h2>
+          <label class="field field--inline">
+            <span class="field__label">Pokaż</span>
+            <select id="ob-filter"></select>
+          </label>
+          <div id="ob-table"></div>
+          <p class="small muted" id="ob-table-note"></p>
+        </article>
+
+        <article class="glass-card bento-item bento-item--wide">
+          <h2>Zapowiedzi bez wyceny</h2>
+          <p class="muted small">Tych nie da się dziś uczciwie przeliczyć na złotówki — brak szczegółów albo brak jakiegokolwiek szacunku.</p>
+          <div id="ob-unpriced"></div>
+        </article>
+
+        <article class="glass-card bento-item">
+          <h2>Jak czytać wynik</h2>
+          <ul class="list-tight small">
+            <li><strong>Zysk bezpośredni</strong> — o ile wzrośnie Twoje netto albo spadną Twoje wydatki.</li>
+            <li><strong>Twoja część kosztu</strong> — ile z kosztu obietnicy przypada na Ciebie, jeśli budżet musiałby go pokryć z podatków.</li>
+            <li><strong>Bilans</strong> — różnica. Dodatni: na obietnicy zyskujesz, nawet gdy za nią zapłacisz.</li>
+            <li>Szacunki kosztów się różnią — przy każdej obietnicy możesz wybrać źródło. Szczegóły w <a href="metodologia.html">metodologii</a>.</li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+'''
+
 ZRODLA = '''
     <section class="hero hero--page container">
       <p class="eyebrow">Źródła</p>
@@ -610,6 +759,7 @@ ZRODLA = '''
 PAGES = [
   ("index.html", "Start", "Budżet Polski 2025–2027: dochody, wydatki, deficyt i dług z źródłem przy każdej liczbie i przeliczeniem na mieszkańca.", "start", START),
   ("kalkulator.html", "Twoje podatki", "Kalkulator: wpisz pensję brutto lub netto i zobacz, ile płacisz podatków i składek, kto je dostaje i na co budżet państwa je wyda.", "kalkulator", KALKULATOR),
+  ("obietnice.html", "Obietnice", "Kalkulator obietnic wyborczych: ile kosztuje budżet obniżka podatku, nowe świadczenie albo wyższe wydatki, ile zyskasz Ty i jaka część kosztu przypada na Ciebie.", "obietnice", OBIETNICE),
   ("dochody.html", "Dochody", "Skąd państwo ma pieniądze: VAT, akcyza, CIT, PIT i dochody niepodatkowe w latach 2025–2027 oraz zmiany podatkowe w projekcie 2027.", "dochody", DOCHODY),
   ("wydatki.html", "Wydatki", "Na co idą pieniądze z budżetu państwa: wydatki według działów 2025–2027, największe pozycje i fundusze poza budżetem.", "wydatki", WYDATKI),
   ("dlug.html", "Deficyt i dług", "Deficyt i dług publiczny Polski: cztery definicje długu, progi 55% i 60% PKB, porównanie z krajami UE.", "dlug", DLUG),

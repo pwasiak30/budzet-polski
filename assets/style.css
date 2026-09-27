@@ -1039,6 +1039,107 @@ details.more > summary {
 
 [hidden] { display: none !important; }
 
+/* ---------- 10.10 Kalkulator obietnic ----------
+   Karta na stronie głównej, wynik „budżet | Ty” z paskami zysku
+   i kosztu (zielony = zysk, pomarańczowy = koszt), tabele. */
+.promo-ob {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: var(--space-3);
+  align-items: start;
+  border-left: 4px solid var(--series-2);
+}
+.promo-ob__text .btn { margin-top: var(--space-1); }
+
+.ob-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.6rem; }
+.ob-meta p { margin: 0 0 0.6rem; }
+.ob-meta p:last-child { margin-bottom: 0; }
+.ob-verify { border-left: 3px solid #e89400; padding-left: 0.6rem; }
+.ob-params { display: grid; gap: 0.6rem; }
+.ob-params:empty { display: none; }
+
+.ob-result-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+}
+.ob-result-head h2 { margin: 0; }
+.ob-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+.ob-panel { padding: 1rem 1.1rem; border-radius: var(--radius-sm); background: var(--color-bg-secondary); }
+.ob-panel h3 { margin: 0 0 0.4rem; }
+.ob-big {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin: 0;
+}
+.ob-big.is-gain .num { color: var(--color-good); }
+.ob-facts {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.ob-facts li {
+  font-size: 0.82rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-solid);
+  border: 1px solid var(--color-border);
+}
+
+.ob-row {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+}
+.ob-row__label { font-size: 0.9rem; }
+.ob-row__value { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.ob-row--total { border-top: 1px solid var(--color-border); margin-top: 0.35rem; padding-top: 0.75rem; }
+.ob-row--total .ob-row__label { font-weight: 700; }
+.ob-row--total .ob-row__value { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; }
+.ob-bar { display: block; height: 0.7rem; min-width: 2px; border-radius: 0 4px 4px 0; }
+.ob-bar.is-gain { background: var(--series-3); }
+.ob-bar.is-cost { background: var(--series-2); }
+.ob-nd { margin: 0 0 0.3rem; }
+
+.linklike {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-accent-blue);
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.linklike:focus-visible { outline: 2px solid var(--color-accent-blue); outline-offset: 2px; border-radius: 2px; }
+.field--inline { display: inline-grid; min-width: min(100%, 22rem); }
+
+@media (max-width: 900px) {
+  .promo-ob, .ob-result { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+  .ob-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .ob-row .ob-bar { grid-column: 1 / -1; grid-row: 2; }
+  .ob-row--total { grid-template-columns: minmax(0, 1fr) auto; }
+  .ob-row--total > span:empty { display: none; }
+}
+
 /* Tryb wymuszonych kolorów (Windows High Contrast) — słupki
    dostają obramowanie, żeby nie zniknęły */
 @media (forced-colors: active) {
